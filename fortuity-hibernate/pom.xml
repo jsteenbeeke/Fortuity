@@ -1,0 +1,71 @@
+<?xml version="1.0"?><project>
+	<inceptionYear>2009</inceptionYear>
+	<parent>
+    	<artifactId>fortuity-parent</artifactId>
+    	<groupId>com.fortuityframework</groupId>
+    	<version>1.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.fortuityframework</groupId>
+	<artifactId>fortuity-hibernate</artifactId>
+	<name>fortuity-hibernate</name>
+	<version>1.0-SNAPSHOT</version>
+	<url>http://www.fortuityframework.com</url>
+	<description>
+		Hibernate integration for Fortuity
+	</description>
+	
+	<developers>
+		<developer>
+			<id>jeroen</id>
+			<name>Jeroen Steenbeeke</name>
+			<email>j.steenbeeke.ml@gmail.com</email>
+			<roles>
+				<role>Project Lead</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
+	
+	<issueManagement>
+		<system>Trac</system>
+		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+	</issueManagement>
+	
+	<scm>
+		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-hibernate/</connection>
+		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-hibernate/</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-hibernate/</url>
+	</scm>
+
+	
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>	
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.4.0.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fortuityframework</groupId>
+			<artifactId>fortuity-core</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

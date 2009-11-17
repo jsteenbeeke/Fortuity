@@ -1,0 +1,63 @@
+<?xml version="1.0"?><project>
+	<parent>
+		<artifactId>fortuity-parent</artifactId>
+		<groupId>com.fortuityframework</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.fortuityframework</groupId>
+	<artifactId>fortuity-core</artifactId>
+	<name>fortuity-core</name>
+	<version>1.0-SNAPSHOT</version>
+	<url>www.fortuityframework.com</url>
+	<description>
+		Core functionality for the Fortuity Framework
+	</description>
+	
+	<developers>
+		<developer>
+			<id>jeroen</id>
+			<name>Jeroen Steenbeeke</name>
+			<email>j.steenbeeke.ml@gmail.com</email>
+			<roles>
+				<role>Project Lead</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
+	
+	<issueManagement>
+		<system>Trac</system>
+		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+	</issueManagement>
+	
+	<scm>
+		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-core/</connection>
+		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-core/</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-core/</url>
+	</scm>
+
+	
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>	
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
+</project>
