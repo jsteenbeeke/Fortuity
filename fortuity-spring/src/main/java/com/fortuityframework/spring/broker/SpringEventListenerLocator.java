@@ -100,11 +100,21 @@ class SpringEventListenerLocator implements ApplicationListener,
 	@Override
 	public List<EventListener> getEventListeners(
 			Class<? extends Event> eventClass) {
-		if (listeners.containsKey(eventClass)) {
-			return listeners.get(eventClass);
+		List<EventListener> result = new LinkedList<EventListener>();
+
+		Class<?> next = eventClass;
+
+		while (listeners.containsKey(next)) {
+			result.addAll(listeners.get(eventClass));
+
+			if (!Event.class.isAssignableFrom(next.getSuperclass())) {
+				break;
+			}
+
+			next = next.getSuperclass();
 		}
 
-		return new LinkedList<EventListener>();
+		return result;
 	}
 
 }

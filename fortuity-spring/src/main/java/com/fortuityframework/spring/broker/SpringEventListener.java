@@ -40,7 +40,7 @@ class SpringEventListener implements EventListener {
 			.getLogger(SpringEventListener.class);
 
 	/**
-	 * Creates a new Elan Event Listener based on Spring
+	 * Creates a new Event Listener based on Spring
 	 * 
 	 * @param beanName
 	 *            The name of the bean that responds to this event
