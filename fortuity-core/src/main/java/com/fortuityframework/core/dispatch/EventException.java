@@ -16,6 +16,8 @@
 package com.fortuityframework.core.dispatch;
 
 /**
+ * Checked exception that is thrown whenever the execution of an event fails
+ * 
  * @author Jeroen Steenbeeke
  * 
  */
@@ -31,22 +33,25 @@ public class EventException extends Exception {
 	}
 
 	/**
-	 * @param message
-	 * @param cause
+	 * Creates a new Event Exception with the given message and cause
+	 * @param message The message describing the exception
+	 * @param cause The exception that caused this exception
 	 */
 	public EventException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
 	/**
-	 * @param message
+	 * Creates a new Event Exception with the given message
+	 * @param message The message describing the exception
 	 */
 	public EventException(String message) {
 		super(message);
 	}
 
 	/**
-	 * @param cause
+	 * Creates a new Event Exception with the given cause
+	 * @param cause The exception that caused this exception
 	 */
 	public EventException(Throwable cause) {
 		super(cause);

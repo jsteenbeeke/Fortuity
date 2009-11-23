@@ -38,7 +38,7 @@ public abstract class JPAEntityEvent implements Event {
 	}
 
 	/**
-	 * @see net.elanevent.core.event.Event#getSource()
+	 * @see com.fortuityframework.core.event.Event#getSource()
 	 */
 	@Override
 	public Object getSource() {

@@ -20,6 +20,9 @@ import com.fortuityframework.core.dispatch.EventContext;
 import com.fortuityframework.core.event.Event;
 
 /**
+ * Event broker that uses the Last-In-First-Out principle of ordering events (similar to a stack
+ * with push/pop operations).
+ * 
  * @author Jeroen Steenbeeke
  * 
  */
@@ -28,7 +31,7 @@ public class LIFOQueueEventBroker extends EventBroker {
 	 * @see com.fortuityframework.core.dispatch.EventBroker#createContext(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected EventContext createContext(final Event contextEvent) {
+	protected final EventContext createContext(final Event contextEvent) {
 		return new EventContext() {
 			/**
 			 * @see com.fortuityframework.core.dispatch.EventContext#getEvent()

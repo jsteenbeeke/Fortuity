@@ -20,9 +20,17 @@ import java.util.List;
 import com.fortuityframework.core.event.Event;
 
 /**
+ * Locator class the finds event listeners capable of processing the given class. An EventListenerLocator is generally
+ * implemented by the dispatch mechanism used for delivering events. Users generally should not have to worry about this class
+ * 
  * @author Jeroen Steenbeeke
  * 
  */
 public interface EventListenerLocator {
+	/**
+	 * Get a list of EventListeners for the given class
+	 * @param eventClass The class of the event being processed
+	 * @return A list of event listeners, which may be empty
+	 */
 	List<EventListener> getEventListeners(Class<? extends Event> eventClass);
 }

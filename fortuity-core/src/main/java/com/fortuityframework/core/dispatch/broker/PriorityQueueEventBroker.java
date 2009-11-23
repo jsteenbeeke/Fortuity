@@ -24,13 +24,18 @@ import com.fortuityframework.core.event.Event;
 import com.fortuityframework.core.event.PrioritizedEvent;
 
 /**
- * @author Jeroen Steenbeeke
+ * Event broker that orders additional events using a priority queue. To take advantage
+ * of this queue, events should implement the {@link PrioritizedEvent} interface. Events
+ * that do not implement this interface will get a priority of {@link Integer.MIN_VALUE}
  * 
+ * @author Jeroen Steenbeeke
  */
 public class PriorityQueueEventBroker extends EventBroker {
-
+	/**
+	 * @see com.fortuityframework.core.dispatch.EventBroker#createContext(com.fortuityframework.core.event.Event)
+	 */
 	@Override
-	protected EventContext createContext(final Event contextEvent) {
+	protected final EventContext createContext(final Event contextEvent) {
 		return new EventContext() {
 			/**
 			 * 			
@@ -54,7 +59,15 @@ public class PriorityQueueEventBroker extends EventBroker {
 		};
 	}
 
-	static class PriorityComparator implements Comparator<Event> {
+	/**
+	 *
+	 * Comparator implementation for events. Orders events by their priority. The higher the priority
+	 * value, the sooner the event will be executed. If an event has no priority {@code Integer.MIN_VALUE} is
+	 * assumed
+	 * 
+	 * @author Jeroen Steenbeeke
+	 */
+	static final class PriorityComparator implements Comparator<Event> {
 		/**
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */

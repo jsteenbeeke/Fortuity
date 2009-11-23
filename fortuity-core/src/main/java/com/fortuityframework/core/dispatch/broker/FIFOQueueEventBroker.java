@@ -20,22 +20,30 @@ import com.fortuityframework.core.dispatch.EventContext;
 import com.fortuityframework.core.event.Event;
 
 /**
+ * Event broker that uses a First-In-First-Out ordering for events
+ * 
  * @author Jeroen Steenbeeke
  * 
  */
-public final class FIFOQueueEventBroker extends EventBroker {
+public class FIFOQueueEventBroker extends EventBroker {
 
 	/**
 	 * @see com.fortuityframework.core.dispatch.EventBroker#createContext(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected EventContext createContext(final Event contextEvent) {
+	protected final EventContext createContext(final Event contextEvent) {
 		return new EventContext() {
+			/**
+			 * @see com.fortuityframework.core.dispatch.EventContext#getEvent()
+			 */
 			@Override
 			public Event getEvent() {
 				return contextEvent;
 			}
 
+			/**
+			 * @see com.fortuityframework.core.dispatch.EventContext#triggerEvent(com.fortuityframework.core.event.Event)
+			 */
 			@Override
 			public void triggerEvent(Event event) {
 				getQueue().add(event);

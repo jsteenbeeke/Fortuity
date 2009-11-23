@@ -24,7 +24,6 @@ import java.util.Map;
  * 
  */
 public abstract class JPAEntityUpdateEvent extends JPAEntityEvent {
-	private Map<String, Object> oldValues;
 	private Map<String, Object> newValues;
 
 	/**
@@ -33,28 +32,18 @@ public abstract class JPAEntityUpdateEvent extends JPAEntityEvent {
 	 * 
 	 * @param entity
 	 *            The entity that has been updated
-	 * @param oldValues
-	 *            The values that were set to properties prior to the update
 	 * @param newValues
-	 *            The new values of the properties
+	 *            The values that were set to properties after the update
 	 */
-	protected JPAEntityUpdateEvent(Object entity,
-			Map<String, Object> oldValues, Map<String, Object> newValues) {
+	protected JPAEntityUpdateEvent(Object entity, Map<String, Object> newValues) {
 		super(entity);
+		this.newValues = newValues;
 	}
 
 	/**
 	 * @return the oldValues
 	 */
-	public Map<String, Object> getOldValues() {
-		return oldValues;
-	}
-
-	/**
-	 * @return the newValues
-	 */
 	public Map<String, Object> getNewValues() {
 		return newValues;
 	}
-
 }

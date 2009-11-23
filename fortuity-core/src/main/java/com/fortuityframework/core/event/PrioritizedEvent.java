@@ -16,7 +16,7 @@
 package com.fortuityframework.core.event;
 
 /**
- * Event with a priority, to be used with a PriorityQueueEventBroker
+ * Event with a priority, to be used with a {@link com.fortuityframework.core.dispatch.PriorityQueueEventBroker}
  * 
  * @author Jeroen Steenbeeke
  * 

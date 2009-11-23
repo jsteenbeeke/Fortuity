@@ -28,8 +28,6 @@ public class JPAPropertyChangeEvent implements Event {
 
 	private String propertyName;
 
-	private Object oldValue;
-
 	private Object newValue;
 
 	/**
@@ -40,34 +38,22 @@ public class JPAPropertyChangeEvent implements Event {
 	 *            The updated entity
 	 * @param propertyName
 	 *            The altered property
-	 * @param oldValue
-	 *            The property's old value
 	 * @param newValue
 	 *            The property's new value
 	 */
 	protected JPAPropertyChangeEvent(Object entity, String propertyName,
-			Object oldValue, Object newValue) {
+			Object newValue) {
 		this.entity = entity;
 		this.propertyName = propertyName;
-		this.oldValue = oldValue;
 		this.newValue = newValue;
 	}
 
 	/**
-	 * @see net.elanevent.core.event.Event#getSource()
+	 * @see com.fortuityframework.core.event.Event#getSource()
 	 */
 	@Override
 	public Object getSource() {
 		return entity;
-	}
-
-	/**
-	 * Gets the property's value prior to the update
-	 * 
-	 * @return The previous value
-	 */
-	public Object getOldValue() {
-		return oldValue;
 	}
 
 	/**

@@ -22,7 +22,7 @@ import com.fortuityframework.core.event.Event;
 /**
  * Annotation that indicates that the given method should be called when a
  * FortuityEvent occurs. Note that this will only happen if the class the annotated
- * method is in is in some way connected to the Elan event broker.
+ * method is in is in some way connected to the event broker.
  * 
  * @author Jeroen Steenbeeke
  * 

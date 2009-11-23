@@ -16,9 +16,17 @@
 package com.fortuityframework.core.dispatch;
 
 /**
+ * Fortuity event listener. An EventListener has the ability to respond to events and dispatch
+ * them further depending on the context. Users of Fortuity generally do not have to worry about this interface.
+ * 
  * @author Jeroen Steenbeeke
  * 
  */
 public interface EventListener {
+	/**
+	 * Dispatch an event with the given context
+	 * @param context The context of the current event
+	 * @throws EventException If the processing of the event raises an exception or encounters an error
+	 */
 	void dispatchEvent(EventContext context) throws EventException;
 }
