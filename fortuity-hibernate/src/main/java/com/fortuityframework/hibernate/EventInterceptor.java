@@ -19,7 +19,9 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
@@ -33,8 +35,8 @@ import com.fortuityframework.core.annotation.jpa.FortuityEntity;
 import com.fortuityframework.core.annotation.jpa.FortuityProperty;
 import com.fortuityframework.core.dispatch.EventBroker;
 import com.fortuityframework.core.dispatch.EventException;
-import com.fortuityframework.core.event.jpa.JPAEntityUpdateEvent;
-import com.fortuityframework.core.event.jpa.JPAPropertyChangeEvent;
+import com.fortuityframework.core.event.Event;
+import com.fortuityframework.core.event.jpa.*;
 
 /**
  * @author Jeroen Steenbeeke
@@ -71,7 +73,16 @@ public class EventInterceptor implements Interceptor {
 	@Override
 	public void onDelete(Object entity, Serializable id, Object[] state,
 			String[] propertyNames, Type[] types) {
-		// TODO event onDelete logic
+		Class<?> entityClass = entity.getClass();
+		FortuityEntity metadata = entityClass
+				.getAnnotation(FortuityEntity.class);
+
+		if (metadata != null) {
+			for (Class<? extends JPAEntityDeleteEvent> eventClass : metadata
+					.onDelete()) {
+				dispatchDeleteEvent(entity, eventClass);
+			}
+		}
 
 		chainedInterceptor.onDelete(entity, id, state, propertyNames, types);
 	}
@@ -84,6 +95,16 @@ public class EventInterceptor implements Interceptor {
 	@Override
 	public boolean onSave(Object entity, Serializable id, Object[] state,
 			String[] propertyNames, Type[] types) {
+		Class<?> entityClass = entity.getClass();
+		FortuityEntity metadata = entityClass
+				.getAnnotation(FortuityEntity.class);
+
+		if (metadata != null) {
+			for (Class<? extends JPAEntityCreateEvent> eventClass : metadata
+					.onCreate()) {
+				dispatchCreateEvent(entity, eventClass);
+			}
+		}
 
 		return chainedInterceptor.onSave(entity, id, state, propertyNames,
 				types);
@@ -117,7 +138,6 @@ public class EventInterceptor implements Interceptor {
 			}
 		}
 
-		Set<Field> annotatedFields = new HashSet<Field>();
 		Class<?> next = entityClass;
 		while (next.isAnnotationPresent(Entity.class)
 				|| next.isAnnotationPresent(MappedSuperclass.class)) {
@@ -161,11 +181,22 @@ public class EventInterceptor implements Interceptor {
 			Class<? extends JPAPropertyChangeEvent> eventClass,
 			Object oldValue, Object newValue, String fieldName) {
 		try {
-			Constructor<? extends JPAPropertyChangeEvent> ctor = eventClass
-					.getConstructor(Object.class, String.class, Object.class,
-							Object.class);
-			JPAPropertyChangeEvent event = ctor.newInstance(entity, fieldName,
-					oldValue, newValue);
+			JPAPropertyChangeEvent event;
+
+			if (JPAPreviousValueAwarePropertyChangeEvent.class
+					.isAssignableFrom(eventClass)) {
+				Constructor<? extends JPAPropertyChangeEvent> ctor = eventClass
+						.getConstructor(Object.class, String.class,
+								Object.class, Object.class);
+				event = ctor.newInstance(entity, fieldName, newValue, oldValue);
+			} else {
+
+				Constructor<? extends JPAPropertyChangeEvent> ctor = eventClass
+						.getConstructor(Object.class, String.class,
+								Object.class);
+
+				event = ctor.newInstance(entity, fieldName, newValue);
+			}
 
 			broker.dispatchEvent(event);
 		} catch (SecurityException e) {
@@ -176,7 +207,7 @@ public class EventInterceptor implements Interceptor {
 					.error(
 							"Declared event "
 									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityUpdateEvent",
+									+ " does not have a proper default constructor. Please extend the default constructor of JPAPropertyChangeEvent or that of JPAPreviousValueAwarePropertyChangeEvent",
 							e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -201,10 +232,18 @@ public class EventInterceptor implements Interceptor {
 			Map<String, Object> oldValues, Map<String, Object> newValues,
 			Class<? extends JPAEntityUpdateEvent> eventClass) {
 		try {
-			Constructor<? extends JPAEntityUpdateEvent> ctor = eventClass
-					.getConstructor(Object.class, Map.class, Map.class);
-			JPAEntityUpdateEvent event = ctor.newInstance(entity, oldValues,
-					newValues);
+			Event event;
+
+			if (JPAPreviousValueAwareEntityUpdateEvent.class
+					.isAssignableFrom(eventClass)) {
+				Constructor<? extends JPAEntityUpdateEvent> ctor = eventClass
+						.getConstructor(Object.class, Map.class, Map.class);
+				event = ctor.newInstance(entity, newValues, oldValues);
+			} else {
+				Constructor<? extends JPAEntityUpdateEvent> ctor = eventClass
+						.getConstructor(Object.class, Map.class);
+				event = ctor.newInstance(entity, newValues);
+			}
 
 			broker.dispatchEvent(event);
 
@@ -216,7 +255,7 @@ public class EventInterceptor implements Interceptor {
 					.error(
 							"Declared event "
 									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityUpdateEvent",
+									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityUpdateEvent or JPAPreviousValueAwareEntityUpdateEvent",
 							e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -239,8 +278,116 @@ public class EventInterceptor implements Interceptor {
 	@Override
 	public boolean onLoad(Object entity, Serializable id, Object[] state,
 			String[] propertyNames, Type[] types) {
+		Class<?> entityClass = entity.getClass();
+		FortuityEntity metadata = entityClass
+				.getAnnotation(FortuityEntity.class);
+
+		if (metadata != null) {
+			for (Class<? extends JPAEntityLoadEvent> eventClass : metadata
+					.onLoad()) {
+				dispatchLoadEvent(entity, eventClass);
+			}
+		}
+
 		return chainedInterceptor.onLoad(entity, id, state, propertyNames,
 				types);
+	}
+
+	/**
+	 * @param entity
+	 * @param eventClass
+	 */
+	private void dispatchLoadEvent(Object entity,
+			Class<? extends JPAEntityLoadEvent> eventClass) {
+		try {
+			Constructor<? extends JPAEntityLoadEvent> ctor = eventClass
+					.getConstructor(Object.class);
+			JPAEntityLoadEvent event = ctor.newInstance(entity);
+			broker.dispatchEvent(event);
+
+		} catch (SecurityException e) {
+			log.error("Declared event " + eventClass.getName()
+					+ " does not have an accessible constructor", e);
+		} catch (NoSuchMethodException e) {
+			log
+					.error(
+							"Declared event "
+									+ eventClass.getName()
+									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityLoadEvent",
+							e);
+		} catch (IllegalArgumentException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (java.lang.InstantiationException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (IllegalAccessException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (InvocationTargetException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (EventException e) {
+			log.error("Event handler raised an exception", e);
+		}
+	}
+
+	private void dispatchDeleteEvent(Object entity,
+			Class<? extends JPAEntityDeleteEvent> eventClass) {
+		try {
+			Constructor<? extends JPAEntityDeleteEvent> ctor = eventClass
+					.getConstructor(Object.class);
+			JPAEntityDeleteEvent event = ctor.newInstance(entity);
+			broker.dispatchEvent(event);
+
+		} catch (SecurityException e) {
+			log.error("Declared event " + eventClass.getName()
+					+ " does not have an accessible constructor", e);
+		} catch (NoSuchMethodException e) {
+			log
+					.error(
+							"Declared event "
+									+ eventClass.getName()
+									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityDeleteEvent",
+							e);
+		} catch (IllegalArgumentException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (java.lang.InstantiationException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (IllegalAccessException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (InvocationTargetException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (EventException e) {
+			log.error("Event handler raised an exception", e);
+		}
+	}
+
+	private void dispatchCreateEvent(Object entity,
+			Class<? extends JPAEntityCreateEvent> eventClass) {
+		try {
+			Constructor<? extends JPAEntityCreateEvent> ctor = eventClass
+					.getConstructor(Object.class);
+			JPAEntityCreateEvent event = ctor.newInstance(entity);
+			broker.dispatchEvent(event);
+
+		} catch (SecurityException e) {
+			log.error("Declared event " + eventClass.getName()
+					+ " does not have an accessible constructor", e);
+		} catch (NoSuchMethodException e) {
+			log
+					.error(
+							"Declared event "
+									+ eventClass.getName()
+									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityCreateEvent",
+							e);
+		} catch (IllegalArgumentException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (java.lang.InstantiationException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (IllegalAccessException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (InvocationTargetException e) {
+			log.error("Invocation of event constructor failed", e);
+		} catch (EventException e) {
+			log.error("Event handler raised an exception", e);
+		}
 	}
 
 	/**

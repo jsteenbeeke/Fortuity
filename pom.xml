@@ -86,7 +86,14 @@
 					<artifactId>maven-repository-plugin</artifactId>
 					<version>2.3</version>
 				</plugin>
-				
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<configuration>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>true</downloadJavadocs>
+					</configuration>
+				</plugin>	
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -95,5 +102,6 @@
 		<module>fortuity-core</module>
 		<module>fortuity-hibernate</module>
 		<module>fortuity-spring</module>
+    		<module>fortuity-openjpa</module>
 	</modules>
 </project>
