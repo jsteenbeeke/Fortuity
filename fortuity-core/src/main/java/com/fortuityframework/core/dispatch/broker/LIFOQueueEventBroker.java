@@ -46,9 +46,17 @@ public class LIFOQueueEventBroker extends EventBroker {
 			 */
 			@Override
 			public void triggerEvent(Event event) {
-				getQueue().add(0, event);
+				enqueueEvent(event);
 			}
 		};
+	}
+
+	/**
+	 * @see com.fortuityframework.core.dispatch.EventBroker#enqueueEvent(com.fortuityframework.core.event.Event)
+	 */
+	@Override
+	protected void enqueueEvent(Event event) {
+		getQueue().add(0, event);
 	}
 
 }

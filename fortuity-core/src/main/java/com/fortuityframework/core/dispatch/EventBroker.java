@@ -37,6 +37,12 @@ public abstract class EventBroker {
 
 	private List<Event> queue = new LinkedList<Event>();
 
+	private ThreadLocal<Boolean> inProcessor = new ThreadLocal<Boolean>() {
+		protected Boolean initialValue() {
+			return false;
+		};
+	};
+
 	/**
 	 * Sets the Event Listener locator, which is the mechanism for finding
 	 * event listeners for a given event.
@@ -60,27 +66,66 @@ public abstract class EventBroker {
 	}
 
 	/**
-	 * Dispatch an event to event listeners. This method will cause any other method
-	 * listening for the given event to be called. Event listeners can trigger new events in turn,
+	 * Dispatch a single event to be processed. WARNING: Do not call this method from within a method that is
+	 * itself an event responder! Use the triggerEvent method of EventContext instead
+	 * 
+	 * @param event The event to dispatch
+	 * @throws EventException If an event encountered an error
+	 */
+	public final void dispatchEvent(Event event) throws EventException {
+		enqueueEvent(event);
+
+		processEvents();
+	}
+
+	/**
+	 * Dispatch multiple events to be processed, using the queuing mechanism to take care of ordering.
+	 * WARNING: Do not call this method from within a method that is itself an event responder! Use the
+	 * triggerEvent method of EventContext instead
+	 * 
+	 * @param event The event to dispatch
+	 * @throws EventException If an event encountered an error
+	 */
+	public final void dispatchEvents(List<Event> events) throws EventException {
+		for (Event event : events) {
+			enqueueEvent(event);
+		}
+
+		processEvents();
+	}
+
+	/**
+	 * Dispatch all queued events to event listeners. This method will cause any other method
+	 * listening for the given events to be called. Event listeners can trigger new events in turn,
 	 * in which case the implementing class can decide in which order they should be executed.
 	 * 
 	 * @param event The event to dispatch
 	 * @throws EventException If the execution of the event goes awry
 	 */
-	public final synchronized void dispatchEvent(Event event)
-			throws EventException {
-		EventContext context = createContext(event);
+	protected final synchronized void processEvents() throws EventException {
+		// This method may not be recursively called - it may break event
+		// ordering
+		if (!inProcessor.get()) {
+			inProcessor.set(true);
+			while (!getQueue().isEmpty()) {
+				Event event = getQueue().remove(0);
 
-		for (EventListener listener : locator.getEventListeners(event
-				.getClass())) {
-			listener.dispatchEvent(context);
-		}
+				EventContext context = createContext(event);
 
-		if (!getQueue().isEmpty()) {
-			Event next = getQueue().remove(0);
-			dispatchEvent(next);
+				for (EventListener listener : locator.getEventListeners(event
+						.getClass())) {
+					listener.dispatchEvent(context);
+				}
+			}
+			inProcessor.set(false);
 		}
 	}
+
+	/**
+	 * Adds the given even to the queue. The exact behavior of this method depends on the implementation provided by the subclass
+	 * @param event The event to enqueue
+	 */
+	protected abstract void enqueueEvent(Event event);
 
 	/**
 	 * Creates an event context for the given event. Depending on the mechanism of event dispatching,

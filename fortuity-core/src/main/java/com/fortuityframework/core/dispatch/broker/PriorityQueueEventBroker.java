@@ -51,12 +51,19 @@ public class PriorityQueueEventBroker extends EventBroker {
 			 */
 			@Override
 			public void triggerEvent(Event event) {
-				getQueue().add(event);
-
-				Collections.sort(getQueue(), new PriorityComparator());
-
+				enqueueEvent(event);
 			}
 		};
+	}
+
+	/**
+	 * @see com.fortuityframework.core.dispatch.EventBroker#enqueueEvent(com.fortuityframework.core.event.Event)
+	 */
+	@Override
+	protected void enqueueEvent(Event event) {
+		getQueue().add(event);
+
+		Collections.sort(getQueue(), new PriorityComparator());
 	}
 
 	/**

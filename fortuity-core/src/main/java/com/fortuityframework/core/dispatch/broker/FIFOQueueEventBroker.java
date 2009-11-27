@@ -46,10 +46,18 @@ public class FIFOQueueEventBroker extends EventBroker {
 			 */
 			@Override
 			public void triggerEvent(Event event) {
-				getQueue().add(event);
+				enqueueEvent(event);
 			}
 
 		};
+	}
+
+	/**
+	 * @see com.fortuityframework.core.dispatch.EventBroker#enqueueEvent(com.fortuityframework.core.event.Event)
+	 */
+	@Override
+	protected void enqueueEvent(Event event) {
+		getQueue().add(event);
 	}
 
 }
