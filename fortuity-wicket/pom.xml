@@ -1,20 +1,18 @@
-<?xml version="1.0"?><project>
-	<inceptionYear>2009</inceptionYear>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	    	<artifactId>fortuity-parent</artifactId>
-	    	<groupId>com.fortuityframework</groupId>
+		<artifactId>fortuity-parent</artifactId>
+		<groupId>com.fortuityframework</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortuityframework</groupId>
-	<artifactId>fortuity-hibernate</artifactId>
-	<name>fortuity-hibernate</name>
-    	<version>${fortuity.version}</version>
-	<url>http://www.fortuityframework.com</url>
-	<description>
-		Hibernate integration for Fortuity
-	</description>
-	
+	<artifactId>fortuity-wicket</artifactId>
+	<version>${fortuity.version}</version>
+	<name>fortuity-wicket</name>
+	<url>http://maven.apache.org</url>
+
 	<developers>
 		<developer>
 			<id>jeroen</id>
@@ -34,10 +32,10 @@
 	</issueManagement>
 	
 	<scm>
-		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-hibernate/</connection>
-		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-hibernate/</developerConnection>
+		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-wicket/</connection>
+		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-wicket/</developerConnection>
 		<tag>HEAD</tag>
-		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-hibernate/</url>
+		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-wicket/</url>
 	</scm>
 
 	
@@ -49,7 +47,8 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>	
-	
+
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -57,9 +56,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.4.0.GA</version>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket</artifactId>
+			<version>1.4.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
