@@ -19,6 +19,8 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextStartedEvent;
 
+import com.fortuityframework.core.dispatch.EventListenerLocator;
+import com.fortuityframework.core.dispatch.NullEventListenerLocator;
 import com.fortuityframework.core.dispatch.broker.PriorityQueueEventBroker;
 
 /**
@@ -32,6 +34,24 @@ import com.fortuityframework.core.dispatch.broker.PriorityQueueEventBroker;
  */
 public class SpringPriorityQueueEventBroker extends PriorityQueueEventBroker
 		implements ApplicationListener {
+	private EventListenerLocator chainedLocator;
+
+	/**
+	 * Create a new Spring Priority Queue Event Broker
+	 */
+	public SpringPriorityQueueEventBroker() {
+		this.chainedLocator = new NullEventListenerLocator();
+	}
+
+	/**
+	 * Create a new Spring Priority Queue Event Broker that chains events to another locator after processing Spring
+	 * @param chainedLocator The locator to chain events to
+	 */
+	public SpringPriorityQueueEventBroker(EventListenerLocator chainedLocator) {
+		super();
+		this.chainedLocator = chainedLocator;
+	}
+
 	/**
 	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
 	 */
@@ -40,6 +60,7 @@ public class SpringPriorityQueueEventBroker extends PriorityQueueEventBroker
 		if (event instanceof ContextStartedEvent) {
 			SpringEventListenerLocator locator = new SpringEventListenerLocator();
 			locator.onApplicationEvent(event);
+			locator.setChainedLocator(chainedLocator);
 			setEventListenerLocator(locator);
 		}
 	}

@@ -19,6 +19,8 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextStartedEvent;
 
+import com.fortuityframework.core.dispatch.EventListenerLocator;
+import com.fortuityframework.core.dispatch.NullEventListenerLocator;
 import com.fortuityframework.core.dispatch.broker.LIFOQueueEventBroker;
 
 /**
@@ -31,6 +33,23 @@ import com.fortuityframework.core.dispatch.broker.LIFOQueueEventBroker;
  */
 public class SpringLIFOQueueEventBroker extends LIFOQueueEventBroker implements
 		ApplicationListener {
+	private EventListenerLocator chainedLocator;
+
+	/**
+	 * Create a new Spring LIFO Queue event broker that does not chain the events after processing by Spring
+	 */
+	public SpringLIFOQueueEventBroker() {
+		chainedLocator = new NullEventListenerLocator();
+	}
+
+	/**
+	 * Create a new Spring LIFO Queue event broker that chains the events to an additional locator after processing by Spring
+	 * @param chainedLocator The locator to chain to
+	 */
+	public SpringLIFOQueueEventBroker(EventListenerLocator chainedLocator) {
+		this.chainedLocator = chainedLocator;
+	}
+
 	/**
 	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
 	 */
@@ -39,6 +58,7 @@ public class SpringLIFOQueueEventBroker extends LIFOQueueEventBroker implements
 		if (event instanceof ContextStartedEvent) {
 			SpringEventListenerLocator locator = new SpringEventListenerLocator();
 			locator.onApplicationEvent(event);
+			locator.setChainedLocator(chainedLocator);
 			setEventListenerLocator(locator);
 		}
 	}

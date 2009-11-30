@@ -30,6 +30,7 @@ import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
 import com.fortuityframework.core.dispatch.EventContext;
 import com.fortuityframework.core.dispatch.EventListener;
 import com.fortuityframework.core.dispatch.EventListenerLocator;
+import com.fortuityframework.core.dispatch.NullEventListenerLocator;
 import com.fortuityframework.core.event.Event;
 
 /**
@@ -42,12 +43,15 @@ class SpringEventListenerLocator implements ApplicationListener,
 		EventListenerLocator {
 	private Map<Class<? extends Event>, List<EventListener>> listeners;
 
+	private EventListenerLocator chainedLocator;
+
 	/**
 	 * Create a new SpringEventListenerLocator. 
 	 * 
 	 */
 	public SpringEventListenerLocator() {
 		listeners = new HashMap<Class<? extends Event>, List<EventListener>>();
+		chainedLocator = new NullEventListenerLocator();
 	}
 
 	/**
@@ -114,7 +118,16 @@ class SpringEventListenerLocator implements ApplicationListener,
 			next = next.getSuperclass();
 		}
 
+		result.addAll(chainedLocator.getEventListeners(eventClass));
+
 		return result;
 	}
 
+	/**
+	 * Chains another locator to add a different channel of event handling
+	 * @param chainedLocator The locator to chain
+	 */
+	public void setChainedLocator(EventListenerLocator chainedLocator) {
+		this.chainedLocator = chainedLocator;
+	}
 }

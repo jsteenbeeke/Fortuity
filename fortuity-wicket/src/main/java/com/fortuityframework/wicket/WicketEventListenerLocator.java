@@ -26,10 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
-import com.fortuityframework.core.dispatch.EventContext;
-import com.fortuityframework.core.dispatch.EventException;
+import com.fortuityframework.core.dispatch.*;
 import com.fortuityframework.core.dispatch.EventListener;
-import com.fortuityframework.core.dispatch.EventListenerLocator;
 import com.fortuityframework.core.event.Event;
 
 /**
@@ -65,7 +63,7 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 	 * Creates a new event listener locator that does not chain, and expires components after one hour
 	 */
 	public WicketEventListenerLocator() {
-		this.chainedLocator = new NullChainedLocator();
+		this.chainedLocator = new NullEventListenerLocator();
 		this.duration = Duration.ONE_HOUR;
 	}
 
@@ -74,7 +72,7 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 	 * @param duration How long a component can be held until it expires
 	 */
 	public WicketEventListenerLocator(Duration duration) {
-		this.chainedLocator = new NullChainedLocator();
+		this.chainedLocator = new NullEventListenerLocator();
 		this.duration = duration;
 	}
 
@@ -226,21 +224,4 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		}
 
 	}
-
-	/**
-	 * Null object for delegated event listener locator
-	 * 
-	 * @author Jeroen Steenbeeke
-	 */
-	private static class NullChainedLocator implements EventListenerLocator {
-		/**
-		 * @see com.fortuityframework.core.dispatch.EventListenerLocator#getEventListeners(java.lang.Class)
-		 */
-		@Override
-		public List<EventListener> getEventListeners(
-				Class<? extends Event> eventClass) {
-			return new LinkedList<EventListener>();
-		}
-	}
-
 }
