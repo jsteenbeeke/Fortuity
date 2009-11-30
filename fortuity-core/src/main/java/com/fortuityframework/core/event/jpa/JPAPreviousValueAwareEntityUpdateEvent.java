@@ -33,7 +33,7 @@ public class JPAPreviousValueAwareEntityUpdateEvent extends
 	 * @param newValues A map of changed properties with their new values
 	 * @param oldValues A map of changed properties with their old values
 	 */
-	private JPAPreviousValueAwareEntityUpdateEvent(Object entity,
+	public JPAPreviousValueAwareEntityUpdateEvent(Object entity,
 			Map<String, Object> newValues, Map<String, Object> oldValues) {
 		super(entity, newValues);
 		this.oldValues = oldValues;
