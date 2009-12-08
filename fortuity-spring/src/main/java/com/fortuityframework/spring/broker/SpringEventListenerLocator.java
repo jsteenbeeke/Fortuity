@@ -41,7 +41,7 @@ import com.fortuityframework.core.event.Event;
  */
 class SpringEventListenerLocator implements ApplicationListener,
 		EventListenerLocator {
-	private Map<Class<? extends Event>, List<EventListener>> listeners;
+	private Map<Class<? extends Event<?>>, List<EventListener>> listeners;
 
 	private EventListenerLocator chainedLocator;
 
@@ -50,7 +50,7 @@ class SpringEventListenerLocator implements ApplicationListener,
 	 * 
 	 */
 	public SpringEventListenerLocator() {
-		listeners = new HashMap<Class<? extends Event>, List<EventListener>>();
+		listeners = new HashMap<Class<? extends Event<?>>, List<EventListener>>();
 		chainedLocator = new NullEventListenerLocator();
 	}
 
@@ -81,14 +81,23 @@ class SpringEventListenerLocator implements ApplicationListener,
 			Class<?>[] paramTypes = m.getParameterTypes();
 			if (paramTypes.length == 1
 					&& EventContext.class.isAssignableFrom(paramTypes[0])) {
-				for (Class<? extends Event> eventClass : eventRef.value()) {
+				Class<? extends Event<?>>[] events = getEvents(eventRef);
+
+				for (Class<? extends Event<?>> eventClass : events) {
 					registerListener(eventClass, beanDefinitionName, m, context);
 				}
 			}
 		}
 	}
 
-	private void registerListener(Class<? extends Event> eventClass,
+	@SuppressWarnings("unchecked")
+	private Class<? extends Event<?>>[] getEvents(OnFortuityEvent eventRef) {
+		Class<? extends Event<?>>[] events = (Class<? extends Event<?>>[]) eventRef
+				.value();
+		return events;
+	}
+
+	private void registerListener(Class<? extends Event<?>> eventClass,
 			String beanName, Method method, ApplicationContext context) {
 		if (!listeners.containsKey(eventClass)) {
 			listeners.put(eventClass, new LinkedList<EventListener>());
@@ -103,7 +112,7 @@ class SpringEventListenerLocator implements ApplicationListener,
 	 */
 	@Override
 	public List<EventListener> getEventListeners(
-			Class<? extends Event> eventClass) {
+			Class<? extends Event<?>> eventClass) {
 		List<EventListener> result = new LinkedList<EventListener>();
 
 		Class<?> next = eventClass;

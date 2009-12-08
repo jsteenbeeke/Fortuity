@@ -60,7 +60,7 @@ class SpringEventListener implements EventListener {
 	 * @see com.fortuityframework.core.dispatch.EventListener#dispatchEvent(com.fortuityframework.core.dispatch.EventContext)
 	 */
 	@Override
-	public void dispatchEvent(EventContext context) throws EventException {
+	public void dispatchEvent(EventContext<?> context) throws EventException {
 		Object bean = applicationContext.getBean(beanName);
 
 		try {
