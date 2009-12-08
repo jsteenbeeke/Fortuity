@@ -75,6 +75,8 @@ public class EntityTests extends HibernateTest {
 		loaded = false;
 		User user = (User) getSession().load(User.class, loadId);
 
+		assertNotNull(user.toString());
+
 		assertNotNull(user);
 		assertTrue(loaded);
 	}
