@@ -100,7 +100,8 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 			if (metadata != null) {
 				if (m.getParameterTypes().length == 1
 						&& m.getParameterTypes()[0] == EventContext.class) {
-					for (Class<? extends Event> event : metadata.value()) {
+					Class<? extends Event<?>>[] events = getEvents(metadata);
+					for (Class<? extends Event<?>> event : events) {
 						if (!listeners.containsKey(event)) {
 							listeners.put(event,
 									new HashSet<ComponentEventListener>());
@@ -122,12 +123,19 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private Class<? extends Event<?>>[] getEvents(OnFortuityEvent metadata) {
+		Class<? extends Event<?>>[] events = (Class<? extends Event<?>>[]) metadata
+				.value();
+		return events;
+	}
+
 	/**
 	 * @see com.fortuityframework.core.dispatch.EventListenerLocator#getEventListeners(java.lang.Class)
 	 */
 	@Override
 	public List<EventListener> getEventListeners(
-			Class<? extends Event> eventClass) {
+			Class<? extends Event<?>> eventClass) {
 		List<EventListener> result = new LinkedList<EventListener>();
 
 		// Dispatch to any chained listeners. We assume that Wicket components
@@ -197,7 +205,8 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		 * @see com.fortuityframework.core.dispatch.EventListener#dispatchEvent(com.fortuityframework.core.dispatch.EventContext)
 		 */
 		@Override
-		public void dispatchEvent(EventContext context) throws EventException {
+		public void dispatchEvent(EventContext<?> context)
+				throws EventException {
 			try {
 				// Check if the component still exists
 				Component component = componentRef.get();
