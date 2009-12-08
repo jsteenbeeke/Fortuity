@@ -15,6 +15,7 @@
  */
 package com.fortuityframework.core.event.jpa;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ import java.util.Map;
  * 
  */
 public abstract class JPAEntityUpdateEvent extends JPAEntityEvent {
-	private Map<String, Object> newValues;
+	private final Map<String, Object> newValues;
 
 	/**
 	 * Creates a new update event for the given entity, with the given set of
@@ -43,7 +44,7 @@ public abstract class JPAEntityUpdateEvent extends JPAEntityEvent {
 	/**
 	 * @return the oldValues
 	 */
-	public Map<String, Object> getNewValues() {
-		return newValues;
+	public final Map<String, Object> getNewValues() {
+		return Collections.unmodifiableMap(newValues);
 	}
 }

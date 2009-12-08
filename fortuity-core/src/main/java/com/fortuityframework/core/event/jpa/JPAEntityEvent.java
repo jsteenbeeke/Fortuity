@@ -24,7 +24,7 @@ import com.fortuityframework.core.event.Event;
  * 
  */
 public abstract class JPAEntityEvent implements Event {
-	private Object entity;
+	private final Object entity;
 
 	/**
 	 * Creates a new JPAEntityEvent based on a change in the given entity The
@@ -41,7 +41,7 @@ public abstract class JPAEntityEvent implements Event {
 	 * @see com.fortuityframework.core.event.Event#getSource()
 	 */
 	@Override
-	public Object getSource() {
+	public final Object getSource() {
 		return entity;
 	}
 

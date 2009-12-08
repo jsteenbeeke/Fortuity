@@ -15,6 +15,7 @@
  */
 package com.fortuityframework.core.event.jpa;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -23,9 +24,9 @@ import java.util.Map;
  * @author Jeroen Steenbeeke
  *
  */
-public class JPAPreviousValueAwareEntityUpdateEvent extends
+public abstract class JPAPreviousValueAwareEntityUpdateEvent extends
 		JPAEntityUpdateEvent {
-	private Map<String, Object> oldValues;
+	private final Map<String, Object> oldValues;
 
 	/**
 	 * Creates a new previous value aware entity update event for the given entity and values
@@ -33,7 +34,7 @@ public class JPAPreviousValueAwareEntityUpdateEvent extends
 	 * @param newValues A map of changed properties with their new values
 	 * @param oldValues A map of changed properties with their old values
 	 */
-	public JPAPreviousValueAwareEntityUpdateEvent(Object entity,
+	protected JPAPreviousValueAwareEntityUpdateEvent(Object entity,
 			Map<String, Object> newValues, Map<String, Object> oldValues) {
 		super(entity, newValues);
 		this.oldValues = oldValues;
@@ -43,8 +44,8 @@ public class JPAPreviousValueAwareEntityUpdateEvent extends
 	 * The previous values of the properties
 	 * @return The previous values of the properties
 	 */
-	public Map<String, Object> getOldValues() {
-		return oldValues;
+	public final Map<String, Object> getOldValues() {
+		return Collections.unmodifiableMap(oldValues);
 	}
 
 }

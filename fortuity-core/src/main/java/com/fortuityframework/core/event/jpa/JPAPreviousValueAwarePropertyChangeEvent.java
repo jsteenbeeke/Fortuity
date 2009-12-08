@@ -23,9 +23,9 @@ package com.fortuityframework.core.event.jpa;
  * @author Jeroen Steenbeeke
  *
  */
-public class JPAPreviousValueAwarePropertyChangeEvent extends
+public abstract class JPAPreviousValueAwarePropertyChangeEvent extends
 		JPAPropertyChangeEvent {
-	private Object oldValue;
+	private final Object oldValue;
 
 	/**
 	 * Intializes a new property change event that is aware of the old value of the
@@ -35,7 +35,7 @@ public class JPAPreviousValueAwarePropertyChangeEvent extends
 	 * @param newValue The new value of the property
 	 * @param oldValue The old value of the property
 	 */
-	private JPAPreviousValueAwarePropertyChangeEvent(Object entity,
+	protected JPAPreviousValueAwarePropertyChangeEvent(Object entity,
 			String propertyName, Object newValue, Object oldValue) {
 		super(entity, propertyName, newValue);
 		this.oldValue = oldValue;
@@ -44,7 +44,7 @@ public class JPAPreviousValueAwarePropertyChangeEvent extends
 	/**
 	 * @return The previous value of the changed property
 	 */
-	public Object getOldValue() {
+	public final Object getOldValue() {
 		return oldValue;
 	}
 
