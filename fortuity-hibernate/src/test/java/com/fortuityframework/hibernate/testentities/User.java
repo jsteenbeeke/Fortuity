@@ -24,10 +24,7 @@ import javax.persistence.Id;
 
 import com.fortuityframework.core.annotation.jpa.FortuityEntity;
 import com.fortuityframework.core.annotation.jpa.FortuityProperty;
-import com.fortuityframework.hibernate.events.UserCreateEvent;
-import com.fortuityframework.hibernate.events.UserDeleteEvent;
-import com.fortuityframework.hibernate.events.UserLoadEvent;
-import com.fortuityframework.hibernate.events.UserUpdateEvent;
+import com.fortuityframework.hibernate.events.*;
 
 /**
  * @author Jeroen Steenbeeke
@@ -47,7 +44,7 @@ public class User {
 	private String password;
 
 	@Column
-	@FortuityProperty()
+	@FortuityProperty(onChange = UserMailChangeEvent.class)
 	private String email;
 
 	@Column

@@ -24,10 +24,7 @@ import org.junit.Test;
 import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
 import com.fortuityframework.core.dispatch.EventContext;
 import com.fortuityframework.hibernate.HibernateTest;
-import com.fortuityframework.hibernate.events.UserCreateEvent;
-import com.fortuityframework.hibernate.events.UserDeleteEvent;
-import com.fortuityframework.hibernate.events.UserLoadEvent;
-import com.fortuityframework.hibernate.events.UserUpdateEvent;
+import com.fortuityframework.hibernate.events.*;
 import com.fortuityframework.hibernate.testentities.User;
 
 /**
@@ -41,6 +38,7 @@ public class EntityTests extends HibernateTest {
 	private boolean loaded = false;
 	private boolean updated = false;
 	private boolean deleted = false;
+	private boolean propUpdated = false;
 
 	@Test
 	public void testCreate() {
@@ -90,6 +88,18 @@ public class EntityTests extends HibernateTest {
 		assertTrue(updated);
 	}
 
+	@Test
+	public void testUpdateProp() {
+		propUpdated = false;
+		User user = makeUser();
+		getSession().save(user);
+		user.setEmail("!test@test.com");
+		getSession().update(user);
+		getSession().flush();
+
+		assertTrue(propUpdated);
+	}
+
 	@OnFortuityEvent(UserDeleteEvent.class)
 	public void onDelete(EventContext context) {
 		deleted = true;
@@ -108,6 +118,11 @@ public class EntityTests extends HibernateTest {
 	@OnFortuityEvent(UserUpdateEvent.class)
 	public void onUpdate(EventContext context) {
 		updated = true;
+	}
+
+	@OnFortuityEvent(UserMailChangeEvent.class)
+	public void onPropertyUpdate(EventContext context) {
+		propUpdated = true;
 	}
 
 	/**
