@@ -36,5 +36,6 @@ public @interface OnFortuityEvent {
 	 * 
 	 * @return An array of events to respond to
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends Event>[] value() default {};
 }

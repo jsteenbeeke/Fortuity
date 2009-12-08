@@ -21,14 +21,14 @@ package com.fortuityframework.core.event.jpa;
  * @author Jeroen Steenbeeke
  * 
  */
-public abstract class JPAEntityDeleteEvent extends JPAEntityEvent {
+public abstract class JPAEntityDeleteEvent<T> extends JPAEntityEvent<T> {
 	/**
 	 * Create an event for the given deleted entity
 	 * 
 	 * @param entity
 	 *            The deleted entity
 	 */
-	protected JPAEntityDeleteEvent(Object entity) {
+	protected JPAEntityDeleteEvent(T entity) {
 		super(entity);
 	}
 }

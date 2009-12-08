@@ -21,14 +21,14 @@ package com.fortuityframework.core.event.jpa;
  * @author Jeroen Steenbeeke
  * 
  */
-public abstract class JPAEntityLoadEvent extends JPAEntityEvent {
+public abstract class JPAEntityLoadEvent<T> extends JPAEntityEvent<T> {
 	/**
 	 * Create a new load event for the given entity
 	 * 
 	 * @param entity
 	 *            The loaded entity
 	 */
-	protected JPAEntityLoadEvent(Object entity) {
+	protected JPAEntityLoadEvent(T entity) {
 		super(entity);
 	}
 }

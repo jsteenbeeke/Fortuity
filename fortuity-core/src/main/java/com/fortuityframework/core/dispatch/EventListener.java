@@ -28,5 +28,5 @@ public interface EventListener {
 	 * @param context The context of the current event
 	 * @throws EventException If the processing of the event raises an exception or encounters an error
 	 */
-	void dispatchEvent(EventContext context) throws EventException;
+	void dispatchEvent(EventContext<?> context) throws EventException;
 }

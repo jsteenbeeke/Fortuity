@@ -31,13 +31,14 @@ public class LIFOQueueEventBroker extends EventBroker {
 	 * @see com.fortuityframework.core.dispatch.EventBroker#createContext(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected final EventContext createContext(final Event contextEvent) {
-		return new EventContext() {
+	protected final <T> EventContext<T> createContext(
+			final Event<T> contextEvent) {
+		return new EventContext<T>() {
 			/**
 			 * @see com.fortuityframework.core.dispatch.EventContext#getEvent()
 			 */
 			@Override
-			public Event getEvent() {
+			public Event<T> getEvent() {
 				return contextEvent;
 			}
 
@@ -45,7 +46,7 @@ public class LIFOQueueEventBroker extends EventBroker {
 			 * @see com.fortuityframework.core.dispatch.EventContext#triggerEvent(com.fortuityframework.core.event.Event)
 			 */
 			@Override
-			public void triggerEvent(Event event) {
+			public void triggerEvent(Event<?> event) {
 				enqueueEvent(event);
 			}
 		};
@@ -55,7 +56,7 @@ public class LIFOQueueEventBroker extends EventBroker {
 	 * @see com.fortuityframework.core.dispatch.EventBroker#enqueueEvent(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected void enqueueEvent(Event event) {
+	protected void enqueueEvent(Event<?> event) {
 		getQueue().add(0, event);
 	}
 

@@ -29,8 +29,8 @@ import com.fortuityframework.core.event.Event;
 public interface EventListenerLocator {
 	/**
 	 * Get a list of EventListeners for the given class
-	 * @param eventClass The class of the event being processed
+	 * @param class1 The class of the event being processed
 	 * @return A list of event listeners, which may be empty
 	 */
-	List<EventListener> getEventListeners(Class<? extends Event> eventClass);
+	List<EventListener> getEventListeners(Class<? extends Event<?>> class1);
 }

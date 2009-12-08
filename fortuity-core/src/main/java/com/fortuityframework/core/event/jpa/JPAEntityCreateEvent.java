@@ -22,14 +22,14 @@ package com.fortuityframework.core.event.jpa;
  * @author Jeroen Steenbeeke
  * 
  */
-public abstract class JPAEntityCreateEvent extends JPAEntityEvent {
+public abstract class JPAEntityCreateEvent<T> extends JPAEntityEvent<T> {
 	/**
 	 * Creates a new JPA Event for the creation of the given entity
 	 * 
 	 * @param entity
 	 *            The created entity
 	 */
-	protected JPAEntityCreateEvent(Object entity) {
+	protected JPAEntityCreateEvent(T entity) {
 		super(entity);
 	}
 }

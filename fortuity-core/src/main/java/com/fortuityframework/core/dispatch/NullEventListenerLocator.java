@@ -33,7 +33,7 @@ public class NullEventListenerLocator implements EventListenerLocator {
 	 */
 	@Override
 	public List<EventListener> getEventListeners(
-			Class<? extends Event> eventClass) {
+			Class<? extends Event<?>> eventClass) {
 		return new LinkedList<EventListener>();
 	}
 

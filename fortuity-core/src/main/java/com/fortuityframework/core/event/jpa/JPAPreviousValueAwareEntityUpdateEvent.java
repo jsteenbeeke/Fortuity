@@ -24,8 +24,8 @@ import java.util.Map;
  * @author Jeroen Steenbeeke
  *
  */
-public abstract class JPAPreviousValueAwareEntityUpdateEvent extends
-		JPAEntityUpdateEvent {
+public abstract class JPAPreviousValueAwareEntityUpdateEvent<T> extends
+		JPAEntityUpdateEvent<T> {
 	private final Map<String, Object> oldValues;
 
 	/**
@@ -34,7 +34,7 @@ public abstract class JPAPreviousValueAwareEntityUpdateEvent extends
 	 * @param newValues A map of changed properties with their new values
 	 * @param oldValues A map of changed properties with their old values
 	 */
-	protected JPAPreviousValueAwareEntityUpdateEvent(Object entity,
+	protected JPAPreviousValueAwareEntityUpdateEvent(T entity,
 			Map<String, Object> newValues, Map<String, Object> oldValues) {
 		super(entity, newValues);
 		this.oldValues = oldValues;

@@ -21,7 +21,7 @@ package com.fortuityframework.core.event;
  * @author Jeroen Steenbeeke
  * 
  */
-public interface PrioritizedEvent extends Event {
+public interface PrioritizedEvent<T> extends Event<T> {
 	/**
 	 * Get the priority of this event. The higher this number, the higher the
 	 * priority

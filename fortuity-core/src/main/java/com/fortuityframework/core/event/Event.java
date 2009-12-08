@@ -21,12 +21,12 @@ package com.fortuityframework.core.event;
  * @author Jeroen Steenbeeke
  * 
  */
-public interface Event {
+public interface Event<T> {
 	/**
 	 * Method to determine the source of the event, i.e. the class or object
 	 * that triggered the event.
 	 * 
 	 * @return The object that triggered the event
 	 */
-	Object getSource();
+	T getSource();
 }

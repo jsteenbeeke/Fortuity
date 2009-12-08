@@ -23,13 +23,13 @@ import com.fortuityframework.core.event.Event;
  * @author Jeroen Steenbeeke
  * 
  */
-public interface EventContext {
+public interface EventContext<T> {
 	/**
 	 * The event that was triggered
 	 * 
 	 * @return An Event object
 	 */
-	Event getEvent();
+	Event<T> getEvent();
 
 	/**
 	 * Triggers a new event
@@ -37,5 +37,5 @@ public interface EventContext {
 	 * @param event
 	 *            The event to dispatch
 	 */
-	void triggerEvent(Event event);
+	void triggerEvent(Event<?> event);
 }

@@ -23,8 +23,8 @@ import com.fortuityframework.core.event.Event;
  * @author Jeroen Steenbeeke
  * 
  */
-public abstract class JPAPropertyChangeEvent implements Event {
-	private final Object entity;
+public abstract class JPAPropertyChangeEvent<T> implements Event<T> {
+	private final T entity;
 
 	private final String propertyName;
 
@@ -41,7 +41,7 @@ public abstract class JPAPropertyChangeEvent implements Event {
 	 * @param newValue
 	 *            The property's new value
 	 */
-	protected JPAPropertyChangeEvent(Object entity, String propertyName,
+	protected JPAPropertyChangeEvent(T entity, String propertyName,
 			Object newValue) {
 		this.entity = entity;
 		this.propertyName = propertyName;
@@ -52,7 +52,7 @@ public abstract class JPAPropertyChangeEvent implements Event {
 	 * @see com.fortuityframework.core.event.Event#getSource()
 	 */
 	@Override
-	public final Object getSource() {
+	public final T getSource() {
 		return entity;
 	}
 

@@ -35,5 +35,6 @@ public @interface FortuityProperty {
 	 * 
 	 * @return An array of triggered events
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends JPAPropertyChangeEvent>[] onChange() default {};
 }

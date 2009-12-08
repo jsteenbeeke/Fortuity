@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Jeroen Steenbeeke
  * 
  */
-public abstract class JPAEntityUpdateEvent extends JPAEntityEvent {
+public abstract class JPAEntityUpdateEvent<T> extends JPAEntityEvent<T> {
 	private final Map<String, Object> newValues;
 
 	/**
@@ -36,7 +36,7 @@ public abstract class JPAEntityUpdateEvent extends JPAEntityEvent {
 	 * @param newValues
 	 *            The values that were set to properties after the update
 	 */
-	protected JPAEntityUpdateEvent(Object entity, Map<String, Object> newValues) {
+	protected JPAEntityUpdateEvent(T entity, Map<String, Object> newValues) {
 		super(entity);
 		this.newValues = newValues;
 	}

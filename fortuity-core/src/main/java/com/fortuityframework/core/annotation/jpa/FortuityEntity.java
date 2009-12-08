@@ -39,6 +39,7 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends JPAEntityCreateEvent>[] onCreate() default {};
 
 	/**
@@ -47,6 +48,7 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends JPAEntityDeleteEvent>[] onDelete() default {};
 
 	/**
@@ -55,6 +57,7 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends JPAEntityUpdateEvent>[] onUpdate() default {};
 
 	/**
@@ -63,5 +66,6 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
+	@SuppressWarnings("unchecked")
 	Class<? extends JPAEntityLoadEvent>[] onLoad() default {};
 }

@@ -35,14 +35,15 @@ public class PriorityQueueEventBroker extends EventBroker {
 	 * @see com.fortuityframework.core.dispatch.EventBroker#createContext(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected final EventContext createContext(final Event contextEvent) {
-		return new EventContext() {
+	protected final <T> EventContext<T> createContext(
+			final Event<T> contextEvent) {
+		return new EventContext<T>() {
 			/**
 			 * 			
 			 * @see com.fortuityframework.core.dispatch.EventContext#getEvent()
 			 */
 			@Override
-			public Event getEvent() {
+			public Event<T> getEvent() {
 				return contextEvent;
 			}
 
@@ -50,7 +51,7 @@ public class PriorityQueueEventBroker extends EventBroker {
 			 * @see com.fortuityframework.core.dispatch.EventContext#triggerEvent(com.fortuityframework.core.event.Event)
 			 */
 			@Override
-			public void triggerEvent(Event event) {
+			public void triggerEvent(Event<?> event) {
 				enqueueEvent(event);
 			}
 		};
@@ -60,7 +61,7 @@ public class PriorityQueueEventBroker extends EventBroker {
 	 * @see com.fortuityframework.core.dispatch.EventBroker#enqueueEvent(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected void enqueueEvent(Event event) {
+	protected void enqueueEvent(Event<?> event) {
 		getQueue().add(event);
 
 		Collections.sort(getQueue(), new PriorityComparator());
@@ -74,16 +75,16 @@ public class PriorityQueueEventBroker extends EventBroker {
 	 * 
 	 * @author Jeroen Steenbeeke
 	 */
-	static final class PriorityComparator implements Comparator<Event> {
+	static final class PriorityComparator implements Comparator<Event<?>> {
 		/**
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		@Override
-		public int compare(Event o1, Event o2) {
-			Integer priority1 = o1 instanceof PrioritizedEvent ? ((PrioritizedEvent) o1)
+		public int compare(Event<?> o1, Event<?> o2) {
+			Integer priority1 = o1 instanceof PrioritizedEvent<?> ? ((PrioritizedEvent<?>) o1)
 					.getPriority()
 					: Integer.MIN_VALUE;
-			Integer priority2 = o2 instanceof PrioritizedEvent ? ((PrioritizedEvent) o2)
+			Integer priority2 = o2 instanceof PrioritizedEvent<?> ? ((PrioritizedEvent<?>) o2)
 					.getPriority()
 					: Integer.MIN_VALUE;
 

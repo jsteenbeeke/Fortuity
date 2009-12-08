@@ -33,7 +33,7 @@ import com.fortuityframework.core.event.PrioritizedEvent;
  * 
  */
 public class PriorityComparatorTest {
-	private static class TestPriorityEvent implements PrioritizedEvent {
+	private static class TestPriorityEvent implements PrioritizedEvent<Void> {
 		private int priority;
 
 		/**
@@ -55,14 +55,14 @@ public class PriorityComparatorTest {
 		 * @see com.fortuityframework.core.event.Event#getSource()
 		 */
 		@Override
-		public Object getSource() {
+		public Void getSource() {
 			return null;
 		}
 	}
 
 	@Test
 	public void testBasicOrdering() {
-		List<PrioritizedEvent> events = new LinkedList<PrioritizedEvent>();
+		List<PrioritizedEvent<?>> events = new LinkedList<PrioritizedEvent<?>>();
 
 		events.add(new TestPriorityEvent(5));
 		events.add(new TestPriorityEvent(15));

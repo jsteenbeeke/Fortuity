@@ -35,7 +35,7 @@ import com.fortuityframework.core.event.Event;
 public abstract class EventBroker {
 	private EventListenerLocator locator;
 
-	private List<Event> queue = new LinkedList<Event>();
+	private List<Event<?>> queue = new LinkedList<Event<?>>();
 
 	private ThreadLocal<Boolean> inProcessor = new ThreadLocal<Boolean>() {
 		protected Boolean initialValue() {
@@ -61,7 +61,7 @@ public abstract class EventBroker {
 	 * 
 	 * @return A reference to the queue of this broker
 	 */
-	protected final List<Event> getQueue() {
+	protected final List<Event<?>> getQueue() {
 		return queue;
 	}
 
@@ -72,7 +72,7 @@ public abstract class EventBroker {
 	 * @param event The event to dispatch
 	 * @throws EventException If an event encountered an error
 	 */
-	public final void dispatchEvent(Event event) throws EventException {
+	public final void dispatchEvent(Event<?> event) throws EventException {
 		enqueueEvent(event);
 
 		processEvents();
@@ -86,8 +86,9 @@ public abstract class EventBroker {
 	 * @param event The event to dispatch
 	 * @throws EventException If an event encountered an error
 	 */
-	public final void dispatchEvents(List<Event> events) throws EventException {
-		for (Event event : events) {
+	public final void dispatchEvents(List<Event<?>> events)
+			throws EventException {
+		for (Event<?> event : events) {
 			enqueueEvent(event);
 		}
 
@@ -108,12 +109,14 @@ public abstract class EventBroker {
 		if (!inProcessor.get()) {
 			inProcessor.set(true);
 			while (!getQueue().isEmpty()) {
-				Event event = getQueue().remove(0);
+				Event<?> event = getQueue().remove(0);
 
-				EventContext context = createContext(event);
+				EventContext<?> context = createContext(event);
 
-				for (EventListener listener : locator.getEventListeners(event
-						.getClass())) {
+				Class<? extends Event<?>> eventClass = getEventClass(event);
+
+				for (EventListener listener : locator
+						.getEventListeners(eventClass)) {
 					listener.dispatchEvent(context);
 				}
 			}
@@ -121,11 +124,16 @@ public abstract class EventBroker {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private Class<? extends Event<?>> getEventClass(Event<?> event) {
+		return (Class<? extends Event<?>>) event.getClass();
+	}
+
 	/**
 	 * Adds the given even to the queue. The exact behavior of this method depends on the implementation provided by the subclass
 	 * @param event The event to enqueue
 	 */
-	protected abstract void enqueueEvent(Event event);
+	protected abstract void enqueueEvent(Event<?> event);
 
 	/**
 	 * Creates an event context for the given event. Depending on the mechanism of event dispatching,
@@ -134,5 +142,5 @@ public abstract class EventBroker {
 	 * @param event The event to create a context for
 	 * @return A context for the given event, capable of dispatching new events
 	 */
-	protected abstract EventContext createContext(Event event);
+	protected abstract <T> EventContext<T> createContext(Event<T> event);
 }
