@@ -78,8 +78,7 @@ public class EventInterceptor implements Interceptor {
 				.getAnnotation(FortuityEntity.class);
 
 		if (metadata != null) {
-			for (Class<? extends JPAEntityDeleteEvent> eventClass : metadata
-					.onDelete()) {
+			for (Class<? extends JPAEntityDeleteEvent<?>> eventClass : getDeleteEvents(metadata)) {
 				dispatchDeleteEvent(entity, eventClass);
 			}
 		}
@@ -100,14 +99,55 @@ public class EventInterceptor implements Interceptor {
 				.getAnnotation(FortuityEntity.class);
 
 		if (metadata != null) {
-			for (Class<? extends JPAEntityCreateEvent> eventClass : metadata
-					.onCreate()) {
+			Class<? extends JPAEntityCreateEvent<?>>[] events = getCreateEvents(metadata);
+
+			for (Class<? extends JPAEntityCreateEvent<?>> eventClass : events) {
 				dispatchCreateEvent(entity, eventClass);
 			}
 		}
 
 		return chainedInterceptor.onSave(entity, id, state, propertyNames,
 				types);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends JPAEntityCreateEvent<?>>[] getCreateEvents(
+			FortuityEntity metadata) {
+		Class<? extends JPAEntityCreateEvent<?>>[] events = (Class<? extends JPAEntityCreateEvent<?>>[]) metadata
+				.onCreate();
+		return events;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends JPAEntityUpdateEvent<?>>[] getUpdateEvents(
+			FortuityEntity metadata) {
+		Class<? extends JPAEntityUpdateEvent<?>>[] events = (Class<? extends JPAEntityUpdateEvent<?>>[]) metadata
+				.onUpdate();
+		return events;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends JPAEntityDeleteEvent<?>>[] getDeleteEvents(
+			FortuityEntity metadata) {
+		Class<? extends JPAEntityDeleteEvent<?>>[] events = (Class<? extends JPAEntityDeleteEvent<?>>[]) metadata
+				.onDelete();
+		return events;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends JPAEntityLoadEvent<?>>[] getLoadEvents(
+			FortuityEntity metadata) {
+		Class<? extends JPAEntityLoadEvent<?>>[] events = (Class<? extends JPAEntityLoadEvent<?>>[]) metadata
+				.onLoad();
+		return events;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends JPAPropertyChangeEvent<?>>[] getPropertyUpdateEvents(
+			FortuityProperty metadata) {
+		Class<? extends JPAPropertyChangeEvent<?>>[] events = (Class<? extends JPAPropertyChangeEvent<?>>[]) metadata
+				.onChange();
+		return events;
 	}
 
 	/**
@@ -125,15 +165,16 @@ public class EventInterceptor implements Interceptor {
 		Map<String, Object> newValues = new HashMap<String, Object>();
 
 		for (int i = 0; i < propertyNames.length; i++) {
-			oldValues.put(propertyNames[i], previousState[i]);
+			if (previousState != null) {
+				oldValues.put(propertyNames[i], previousState[i]);
+			}
 			newValues.put(propertyNames[i], currentState[i]);
 		}
 
 		FortuityEntity entityMetadata = entityClass
 				.getAnnotation(FortuityEntity.class);
 		if (entityMetadata != null) {
-			for (Class<? extends JPAEntityUpdateEvent> eventClass : entityMetadata
-					.onUpdate()) {
+			for (Class<? extends JPAEntityUpdateEvent<?>> eventClass : getUpdateEvents(entityMetadata)) {
 				dispatchUpdateEvent(entity, oldValues, newValues, eventClass);
 			}
 		}
@@ -145,8 +186,7 @@ public class EventInterceptor implements Interceptor {
 				FortuityProperty propertyMetadata = f
 						.getAnnotation(FortuityProperty.class);
 				if (propertyMetadata != null) {
-					for (Class<? extends JPAPropertyChangeEvent> eventClass : propertyMetadata
-							.onChange()) {
+					for (Class<? extends JPAPropertyChangeEvent<?>> eventClass : getPropertyUpdateEvents(propertyMetadata)) {
 						if (oldValues.containsKey(f.getName())) {
 							Object oldValue = oldValues.get(f.getName());
 							Object newValue = newValues.get(f.getName());
@@ -178,21 +218,21 @@ public class EventInterceptor implements Interceptor {
 	 * @param fieldName
 	 */
 	private void dispatchPropertyChangeEvent(Object entity,
-			Class<? extends JPAPropertyChangeEvent> eventClass,
+			Class<? extends JPAPropertyChangeEvent<?>> eventClass,
 			Object oldValue, Object newValue, String fieldName) {
 		try {
-			JPAPropertyChangeEvent event;
+			JPAPropertyChangeEvent<?> event;
 
 			if (JPAPreviousValueAwarePropertyChangeEvent.class
 					.isAssignableFrom(eventClass)) {
-				Constructor<? extends JPAPropertyChangeEvent> ctor = eventClass
-						.getConstructor(Object.class, String.class,
+				Constructor<? extends JPAPropertyChangeEvent<?>> ctor = eventClass
+						.getConstructor(entity.getClass(), String.class,
 								Object.class, Object.class);
 				event = ctor.newInstance(entity, fieldName, newValue, oldValue);
 			} else {
 
-				Constructor<? extends JPAPropertyChangeEvent> ctor = eventClass
-						.getConstructor(Object.class, String.class,
+				Constructor<? extends JPAPropertyChangeEvent<?>> ctor = eventClass
+						.getConstructor(entity.getClass(), String.class,
 								Object.class);
 
 				event = ctor.newInstance(entity, fieldName, newValue);
@@ -230,18 +270,18 @@ public class EventInterceptor implements Interceptor {
 	 */
 	private void dispatchUpdateEvent(Object entity,
 			Map<String, Object> oldValues, Map<String, Object> newValues,
-			Class<? extends JPAEntityUpdateEvent> eventClass) {
+			Class<? extends JPAEntityUpdateEvent<?>> eventClass) {
 		try {
-			Event event;
+			Event<?> event;
 
 			if (JPAPreviousValueAwareEntityUpdateEvent.class
 					.isAssignableFrom(eventClass)) {
-				Constructor<? extends JPAEntityUpdateEvent> ctor = eventClass
-						.getConstructor(Object.class, Map.class, Map.class);
+				Constructor<? extends JPAEntityUpdateEvent<?>> ctor = eventClass
+						.getConstructor(entity.getClass(), Map.class, Map.class);
 				event = ctor.newInstance(entity, newValues, oldValues);
 			} else {
-				Constructor<? extends JPAEntityUpdateEvent> ctor = eventClass
-						.getConstructor(Object.class, Map.class);
+				Constructor<? extends JPAEntityUpdateEvent<?>> ctor = eventClass
+						.getConstructor(entity.getClass(), Map.class);
 				event = ctor.newInstance(entity, newValues);
 			}
 
@@ -278,14 +318,15 @@ public class EventInterceptor implements Interceptor {
 	@Override
 	public boolean onLoad(Object entity, Serializable id, Object[] state,
 			String[] propertyNames, Type[] types) {
-		Class<?> entityClass = entity.getClass();
-		FortuityEntity metadata = entityClass
-				.getAnnotation(FortuityEntity.class);
+		if (entity != null) {
+			Class<?> entityClass = entity.getClass();
+			FortuityEntity metadata = entityClass
+					.getAnnotation(FortuityEntity.class);
 
-		if (metadata != null) {
-			for (Class<? extends JPAEntityLoadEvent> eventClass : metadata
-					.onLoad()) {
-				dispatchLoadEvent(entity, eventClass);
+			if (metadata != null) {
+				for (Class<? extends JPAEntityLoadEvent<?>> eventClass : getLoadEvents(metadata)) {
+					dispatchLoadEvent(entity, eventClass);
+				}
 			}
 		}
 
@@ -298,11 +339,11 @@ public class EventInterceptor implements Interceptor {
 	 * @param eventClass
 	 */
 	private void dispatchLoadEvent(Object entity,
-			Class<? extends JPAEntityLoadEvent> eventClass) {
+			Class<? extends JPAEntityLoadEvent<?>> eventClass) {
 		try {
-			Constructor<? extends JPAEntityLoadEvent> ctor = eventClass
-					.getConstructor(Object.class);
-			JPAEntityLoadEvent event = ctor.newInstance(entity);
+			Constructor<? extends JPAEntityLoadEvent<?>> ctor = eventClass
+					.getConstructor(entity.getClass());
+			JPAEntityLoadEvent<?> event = ctor.newInstance(entity);
 			broker.dispatchEvent(event);
 
 		} catch (SecurityException e) {
@@ -329,11 +370,11 @@ public class EventInterceptor implements Interceptor {
 	}
 
 	private void dispatchDeleteEvent(Object entity,
-			Class<? extends JPAEntityDeleteEvent> eventClass) {
+			Class<? extends JPAEntityDeleteEvent<?>> eventClass) {
 		try {
-			Constructor<? extends JPAEntityDeleteEvent> ctor = eventClass
-					.getConstructor(Object.class);
-			JPAEntityDeleteEvent event = ctor.newInstance(entity);
+			Constructor<? extends JPAEntityDeleteEvent<?>> ctor = eventClass
+					.getConstructor(entity.getClass());
+			JPAEntityDeleteEvent<?> event = ctor.newInstance(entity);
 			broker.dispatchEvent(event);
 
 		} catch (SecurityException e) {
@@ -359,12 +400,13 @@ public class EventInterceptor implements Interceptor {
 		}
 	}
 
-	private void dispatchCreateEvent(Object entity,
-			Class<? extends JPAEntityCreateEvent> eventClass) {
+	private <T> void dispatchCreateEvent(Object entity,
+			Class<? extends JPAEntityCreateEvent<?>> eventClass) {
 		try {
-			Constructor<? extends JPAEntityCreateEvent> ctor = eventClass
-					.getConstructor(Object.class);
-			JPAEntityCreateEvent event = ctor.newInstance(entity);
+			Constructor<? extends JPAEntityCreateEvent<?>> ctor = eventClass
+					.getConstructor(entity.getClass());
+
+			JPAEntityCreateEvent<?> event = ctor.newInstance(entity);
 			broker.dispatchEvent(event);
 
 		} catch (SecurityException e) {
@@ -452,7 +494,10 @@ public class EventInterceptor implements Interceptor {
 	@Override
 	public Object instantiate(String entityName, EntityMode entityMode,
 			Serializable id) throws CallbackException {
-		return chainedInterceptor.instantiate(entityName, entityMode, id);
+		Object entity = chainedInterceptor.instantiate(entityName, entityMode,
+				id);
+
+		return entity;
 	}
 
 	/**

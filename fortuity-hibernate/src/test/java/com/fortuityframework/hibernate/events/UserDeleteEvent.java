@@ -16,17 +16,18 @@
 package com.fortuityframework.hibernate.events;
 
 import com.fortuityframework.core.event.jpa.JPAEntityDeleteEvent;
+import com.fortuityframework.hibernate.testentities.User;
 
 /**
  * @author Jeroen Steenbeeke
  *
  */
-public class UserDeleteEvent extends JPAEntityDeleteEvent {
+public class UserDeleteEvent extends JPAEntityDeleteEvent<User> {
 
 	/**
 	 * @param entity
 	 */
-	public UserDeleteEvent(Object entity) {
+	public UserDeleteEvent(User entity) {
 		super(entity);
 	}
 

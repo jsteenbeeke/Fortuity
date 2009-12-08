@@ -18,14 +18,16 @@ package com.fortuityframework.hibernate.events;
 import java.util.Map;
 
 import com.fortuityframework.core.event.jpa.JPAPreviousValueAwareEntityUpdateEvent;
+import com.fortuityframework.hibernate.testentities.User;
 
 /**
  * @author Jeroen
  *
  */
-public class UserUpdateEvent extends JPAPreviousValueAwareEntityUpdateEvent {
+public class UserUpdateEvent extends
+		JPAPreviousValueAwareEntityUpdateEvent<User> {
 
-	public UserUpdateEvent(Object entity, Map<String, Object> newValues,
+	public UserUpdateEvent(User entity, Map<String, Object> newValues,
 			Map<String, Object> oldValues) {
 		super(entity, newValues, oldValues);
 	}

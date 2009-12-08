@@ -18,7 +18,10 @@ package com.fortuityframework.hibernate.eventtest;
 import static org.junit.Assert.*;
 
 import java.util.Date;
+import java.util.Random;
 
+import org.hibernate.Transaction;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
@@ -40,6 +43,24 @@ public class EntityTests extends HibernateTest {
 	private boolean deleted = false;
 	private boolean propUpdated = false;
 
+	private Long loadId;
+
+	@Before
+	public void prepareLoad() {
+		User user = makeUser();
+
+		loadId = user.getId();
+
+		Transaction t = getSession().beginTransaction();
+
+		getSession().save(user);
+
+		t.commit();
+
+		getSession().evict(user);
+		getSession().clear();
+	}
+
 	@Test
 	public void testCreate() {
 		created = false;
@@ -52,17 +73,9 @@ public class EntityTests extends HibernateTest {
 	@Test
 	public void testLoad() {
 		loaded = false;
-		User user = makeUser();
-		getSession().save(user);
+		User user = (User) getSession().load(User.class, loadId);
 
-		Long id = user.getId();
-
-		getSession().evict(user);
-
-		user = null;
-
-		getSession().get(User.class, id);
-
+		assertNotNull(user);
 		assertTrue(loaded);
 	}
 
@@ -101,35 +114,38 @@ public class EntityTests extends HibernateTest {
 	}
 
 	@OnFortuityEvent(UserDeleteEvent.class)
-	public void onDelete(EventContext context) {
+	public void onDelete(EventContext<User> context) {
 		deleted = true;
 	}
 
 	@OnFortuityEvent(UserCreateEvent.class)
-	public void onCreate(EventContext context) {
+	public void onCreate(EventContext<User> context) {
 		created = true;
 	}
 
 	@OnFortuityEvent(UserLoadEvent.class)
-	public void onLoad(EventContext context) {
+	public void onLoad(EventContext<User> context) {
 		loaded = true;
 	}
 
 	@OnFortuityEvent(UserUpdateEvent.class)
-	public void onUpdate(EventContext context) {
+	public void onUpdate(EventContext<User> context) {
 		updated = true;
 	}
 
 	@OnFortuityEvent(UserMailChangeEvent.class)
-	public void onPropertyUpdate(EventContext context) {
+	public void onPropertyUpdate(EventContext<User> context) {
 		propUpdated = true;
 	}
+
+	private static final Random rand = new Random();
 
 	/**
 	 * @return
 	 */
 	private User makeUser() {
 		User user = new User();
+		user.setId(rand.nextLong());
 		user.setEmail("test@test.com");
 		user.setLastActivity(new Date());
 		user.setPassword("test");

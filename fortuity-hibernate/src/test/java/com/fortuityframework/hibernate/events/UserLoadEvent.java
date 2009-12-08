@@ -16,17 +16,18 @@
 package com.fortuityframework.hibernate.events;
 
 import com.fortuityframework.core.event.jpa.JPAEntityLoadEvent;
+import com.fortuityframework.hibernate.testentities.User;
 
 /**
  * @author Jeroen Steenbeeke
  *
  */
-public class UserLoadEvent extends JPAEntityLoadEvent {
+public class UserLoadEvent extends JPAEntityLoadEvent<User> {
 
 	/**
 	 * @param entity
 	 */
-	public UserLoadEvent(Object entity) {
+	public UserLoadEvent(User entity) {
 		super(entity);
 	}
 

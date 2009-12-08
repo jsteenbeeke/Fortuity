@@ -19,7 +19,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.fortuityframework.core.annotation.jpa.FortuityEntity;
@@ -34,7 +33,6 @@ import com.fortuityframework.hibernate.events.*;
 @FortuityEntity(onCreate = UserCreateEvent.class, onDelete = UserDeleteEvent.class, onLoad = UserLoadEvent.class, onUpdate = UserUpdateEvent.class)
 public class User {
 	@Id
-	@GeneratedValue
 	private Long id;
 
 	@Column

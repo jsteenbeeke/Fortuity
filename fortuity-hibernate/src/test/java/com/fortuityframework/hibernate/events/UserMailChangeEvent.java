@@ -16,15 +16,16 @@
 package com.fortuityframework.hibernate.events;
 
 import com.fortuityframework.core.event.jpa.JPAPreviousValueAwarePropertyChangeEvent;
+import com.fortuityframework.hibernate.testentities.User;
 
 /**
  * @author Jeroen Steenbeeke
  *
  */
 public class UserMailChangeEvent extends
-		JPAPreviousValueAwarePropertyChangeEvent {
+		JPAPreviousValueAwarePropertyChangeEvent<User> {
 
-	public UserMailChangeEvent(Object entity, String propertyName,
+	public UserMailChangeEvent(User entity, String propertyName,
 			Object newValue, Object oldValue) {
 		super(entity, propertyName, newValue, oldValue);
 	}
