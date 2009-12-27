@@ -46,9 +46,8 @@
 			<distribution>repo</distribution>
 			<comments>A business-friendly OSS license</comments>
 		</license>
-	</licenses>	
-
-
+	</licenses>
+	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -66,5 +65,47 @@
 			<artifactId>fortuity-core</artifactId>
 			<version>${fortuity.version}</version>
 		</dependency>
+		 <dependency>
+	         <groupId>org.mortbay.jetty</groupId>
+	         <artifactId>jetty</artifactId>
+	         <version>${jetty.version}</version>
+	         <scope>test</scope>
+		 </dependency>
+		 <dependency>
+	         <groupId>org.mortbay.jetty</groupId>
+	         <artifactId>jetty-util</artifactId>
+	         <version>${jetty.version}</version>
+	         <scope>test</scope>
+		 </dependency>
+		 <dependency>
+	         <groupId>org.mortbay.jetty</groupId>
+	         <artifactId>jetty-management</artifactId>
+	         <version>${jetty.version}</version>
+	         <scope>test</scope>
+	 	</dependency>
+	 	<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.5.8</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
+    </build>
+	
+	<properties>
+		<jetty.version>6.1.22</jetty.version>
+	</properties>
 </project>
