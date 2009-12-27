@@ -65,7 +65,7 @@
 	<distributionManagement>
 		<repository>
 			<id>ssh-repository</id>
-			<url>scpexe://ssh.sourceforge.net/home/groups/f/fo/fortuity/htdocs/repo/</url>
+			<url>scpexe://shell.sourceforge.net/home/groups/f/fo/fortuity/htdocs/repo/</url>
 		</repository>
 	</distributionManagement>
 	
@@ -97,6 +97,13 @@
 				</plugin>	
 			</plugins>
 		</pluginManagement>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+		</extensions>
 	</build>
 
 	<properties>
