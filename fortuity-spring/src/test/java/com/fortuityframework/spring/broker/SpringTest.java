@@ -43,7 +43,7 @@ public class SpringTest {
 
 	@Test
 	public void triggerEventTest() throws EventException {
-		TestResponder responder = (TestResponder) context.getBean("responder");
+		Responder responder = (Responder) context.getBean("responder");
 		EventBroker broker = (EventBroker) context.getBean("eventBroker");
 
 		assertEquals(0, responder.getQueue().size());

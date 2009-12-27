@@ -31,13 +31,13 @@ import com.fortuityframework.spring.broker.events.ResponseEvent;
  */
 
 @Component
-public class TestResponder {
+public class Responder {
 	private List<String> queue;
 
 	/**
 	 * 
 	 */
-	public TestResponder() {
+	public Responder() {
 		queue = new LinkedList<String>();
 	}
 
