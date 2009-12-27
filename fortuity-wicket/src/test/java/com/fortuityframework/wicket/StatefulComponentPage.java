@@ -34,7 +34,7 @@ public class StatefulComponentPage extends WebPage {
 				FortuityTestApplication app = (FortuityTestApplication) getApplication();
 
 				try {
-					app.getEventBroker().dispatchEvent(new TestEvent());
+					app.getEventBroker().dispatchEvent(new ExampleEvent());
 				} catch (EventException e) {
 					error(e.getMessage());
 				}
@@ -48,7 +48,7 @@ public class StatefulComponentPage extends WebPage {
 		});
 	}
 
-	@OnFortuityEvent(TestEvent.class)
+	@OnFortuityEvent(ExampleEvent.class)
 	public void onTestEvent(EventContext<Void> context) {
 		counterModel.setObject(counterModel.getObject() + 1);
 	}

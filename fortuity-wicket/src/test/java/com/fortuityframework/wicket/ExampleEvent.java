@@ -21,7 +21,7 @@ import com.fortuityframework.core.event.Event;
  * @author Jeroen Steenbeeke
  *
  */
-public class TestEvent implements Event<Void> {
+public class ExampleEvent implements Event<Void> {
 
 	/**
 	 * @see com.fortuityframework.core.event.Event#getSource()
