@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-	<bean id="responder" class="com.fortuityframework.spring.broker.TestResponder">
+	<bean id="responder" class="com.fortuityframework.spring.broker.Responder">
 	</bean>
 	
 	<bean id="eventBroker" class="com.fortuityframework.spring.broker.SpringPriorityQueueEventBroker"></bean>
