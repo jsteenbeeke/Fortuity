@@ -42,7 +42,7 @@ public class Responder {
 	}
 
 	@OnFortuityEvent(MessageEvent.class)
-	public void onReceiveMessage(EventContext<String> context) {
+	public void onReceiveMessage(EventContext<MessageEvent> context) {
 		queue.add(context.getEvent().getSource());
 
 		if (queue.size() > 1) {
@@ -51,7 +51,7 @@ public class Responder {
 	}
 
 	@OnFortuityEvent(ResponseEvent.class)
-	public void onReceiveResponse(EventContext<Void> context) {
+	public void onReceiveResponse(EventContext<ResponseEvent> context) {
 		queue.remove(0);
 	}
 

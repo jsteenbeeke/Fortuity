@@ -49,7 +49,7 @@ public class StatefulComponentPage extends WebPage {
 	}
 
 	@OnFortuityEvent(ExampleEvent.class)
-	public void onTestEvent(EventContext<Void> context) {
+	public void onTestEvent(EventContext<ExampleEvent> context) {
 		counterModel.setObject(counterModel.getObject() + 1);
 	}
 

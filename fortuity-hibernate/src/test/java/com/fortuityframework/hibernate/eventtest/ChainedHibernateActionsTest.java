@@ -54,7 +54,7 @@ public class ChainedHibernateActionsTest extends HibernateTest {
 	}
 
 	@OnFortuityEvent(UserCreateEvent.class)
-	public void handleCreateEvent(EventContext<User> context) {
+	public void handleCreateEvent(EventContext<UserCreateEvent> context) {
 		User user = context.getEvent().getSource();
 
 		user.setEmail("scramble!");
@@ -65,7 +65,7 @@ public class ChainedHibernateActionsTest extends HibernateTest {
 	}
 
 	@OnFortuityEvent(UserMailChangeEvent.class)
-	public void handleUpdateEvent(EventContext<User> context) {
+	public void handleUpdateEvent(EventContext<UserMailChangeEvent> context) {
 		User user = context.getEvent().getSource();
 
 		assertEquals("scramble!", user.getEmail());

@@ -23,13 +23,13 @@ import com.fortuityframework.core.event.Event;
  * @author Jeroen Steenbeeke
  * 
  */
-public interface EventContext<T> {
+public interface EventContext<T extends Event<?>> {
 	/**
 	 * The event that was triggered
 	 * 
 	 * @return An Event object
 	 */
-	Event<T> getEvent();
+	T getEvent();
 
 	/**
 	 * Triggers a new event

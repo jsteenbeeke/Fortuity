@@ -142,5 +142,6 @@ public abstract class EventBroker {
 	 * @param event The event to create a context for
 	 * @return A context for the given event, capable of dispatching new events
 	 */
-	protected abstract <T> EventContext<T> createContext(Event<T> event);
+	protected abstract <T extends Event<?>> EventContext<T> createContext(
+			T event);
 }

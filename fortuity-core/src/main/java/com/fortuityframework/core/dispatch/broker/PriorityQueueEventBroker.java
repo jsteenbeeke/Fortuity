@@ -35,15 +35,15 @@ public class PriorityQueueEventBroker extends EventBroker {
 	 * @see com.fortuityframework.core.dispatch.EventBroker#createContext(com.fortuityframework.core.event.Event)
 	 */
 	@Override
-	protected final <T> EventContext<T> createContext(
-			final Event<T> contextEvent) {
+	protected final <T extends Event<?>> EventContext<T> createContext(
+			final T contextEvent) {
 		return new EventContext<T>() {
 			/**
 			 * 			
 			 * @see com.fortuityframework.core.dispatch.EventContext#getEvent()
 			 */
 			@Override
-			public Event<T> getEvent() {
+			public T getEvent() {
 				return contextEvent;
 			}
 

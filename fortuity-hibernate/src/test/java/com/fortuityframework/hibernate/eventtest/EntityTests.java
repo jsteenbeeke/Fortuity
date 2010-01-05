@@ -116,27 +116,27 @@ public class EntityTests extends HibernateTest {
 	}
 
 	@OnFortuityEvent(UserDeleteEvent.class)
-	public void onDelete(EventContext<User> context) {
+	public void onDelete(EventContext<UserDeleteEvent> context) {
 		deleted = true;
 	}
 
 	@OnFortuityEvent(UserCreateEvent.class)
-	public void onCreate(EventContext<User> context) {
+	public void onCreate(EventContext<UserCreateEvent> context) {
 		created = true;
 	}
 
 	@OnFortuityEvent(UserLoadEvent.class)
-	public void onLoad(EventContext<User> context) {
+	public void onLoad(EventContext<UserLoadEvent> context) {
 		loaded = true;
 	}
 
 	@OnFortuityEvent(UserUpdateEvent.class)
-	public void onUpdate(EventContext<User> context) {
+	public void onUpdate(EventContext<UserUpdateEvent> context) {
 		updated = true;
 	}
 
 	@OnFortuityEvent(UserMailChangeEvent.class)
-	public void onPropertyUpdate(EventContext<User> context) {
+	public void onPropertyUpdate(EventContext<UserMailChangeEvent> context) {
 		propUpdated = true;
 	}
 
