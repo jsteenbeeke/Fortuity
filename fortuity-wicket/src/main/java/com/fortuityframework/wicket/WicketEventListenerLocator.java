@@ -15,12 +15,15 @@
  */
 package com.fortuityframework.wicket;
 
-import java.lang.ref.WeakReference;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
+import org.apache.wicket.PageReference;
+import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,7 +163,8 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 
 				for (ComponentEventListener listener : listeners.get(next)) {
 					// Only dispatch to active listeners
-					if (!listener.isExpired()) {
+					if (listener.getFrom() + duration.getMilliseconds() > System
+							.currentTimeMillis()) {
 						result.add(listener);
 					} else {
 						// Remove inactive ones
@@ -184,10 +188,16 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 	 * 
 	 * @author Jeroen Steenbeeke
 	 */
-	private class ComponentEventListener implements EventListener {
-		private long until;
-		private WeakReference<Component> componentRef;
-		private Method eventMethod;
+	private static class ComponentEventListener implements EventListener,
+			Serializable {
+		private static final long serialVersionUID = 1L;
+
+		private long from;
+		private boolean isPage;
+
+		private String componentPath;
+		private PageReference ref;
+		private String methodName;
 
 		/**
 		 * Create a new event listener for the given method of the given component
@@ -195,10 +205,36 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		 * @param eventMethod The method to invoke when it's event occurs
 		 */
 		public ComponentEventListener(Component component, Method eventMethod) {
-			this.until = System.currentTimeMillis()
-					+ duration.getMilliseconds();
-			this.componentRef = new WeakReference<Component>(component);
-			this.eventMethod = eventMethod;
+
+			this.componentPath = component.getPath();
+
+			this.isPage = component instanceof Page;
+
+			this.methodName = eventMethod.getName();
+
+			// Add a callback to report the reference before render, since
+			// we cannot get a reliable PageReference at this stage
+			component.add(new AbstractBehavior() {
+
+				private static final long serialVersionUID = 1L;
+
+				/**
+				 * @see org.apache.wicket.behavior.AbstractBehavior#beforeRender(org.apache.wicket.Component)
+				 */
+				@Override
+				public void beforeRender(Component component) {
+					super.beforeRender(component);
+
+					if (ComponentEventListener.this.ref == null) {
+						Page pg = component.getPage();
+
+						ComponentEventListener.this.ref = pg.getPageReference();
+					}
+
+				}
+			});
+
+			this.from = System.currentTimeMillis();
 		}
 
 		/**
@@ -209,7 +245,12 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 				throws EventException {
 			try {
 				// Check if the component still exists
-				Component component = componentRef.get();
+				Component component = isPage ? ref.getPage() : ref.getPage()
+						.get(componentPath);
+
+				Method eventMethod = component.getClass().getMethod(methodName,
+						EventContext.class);
+
 				if (component != null) {
 					// Invoke the event
 					eventMethod.invoke(component, context);
@@ -224,13 +265,18 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 				throw new EventException(e.getMessage());
 			} catch (InvocationTargetException e) {
 				throw new EventException(e.getMessage());
+			} catch (SecurityException e) {
+				throw new EventException(e.getMessage());
+			} catch (NoSuchMethodException e) {
+				throw new EventException(e.getMessage());
 			}
 		}
 
-		public boolean isExpired() {
-			return System.currentTimeMillis() > until
-					|| componentRef.get() == null;
+		/**
+		 * @return the from
+		 */
+		final long getFrom() {
+			return from;
 		}
-
 	}
 }

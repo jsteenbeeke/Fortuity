@@ -7,6 +7,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
 import com.fortuityframework.core.dispatch.EventContext;
@@ -16,6 +18,9 @@ import com.fortuityframework.core.dispatch.EventException;
  * @author Jeroen Steenbeeke
  */
 public class StatefulComponentPage extends WebPage {
+	private static final Logger logger = LoggerFactory
+			.getLogger(StatefulComponentPage.class);
+
 	private IModel<Integer> counterModel;
 
 	public StatefulComponentPage(int value) {
@@ -37,6 +42,7 @@ public class StatefulComponentPage extends WebPage {
 					app.getEventBroker().dispatchEvent(new ExampleEvent());
 				} catch (EventException e) {
 					error(e.getMessage());
+					logger.error(e.getMessage(), e);
 				}
 
 				if (target != null) {
@@ -46,6 +52,8 @@ public class StatefulComponentPage extends WebPage {
 			}
 
 		});
+
+		add(new EventReceivingPanel("receiver"));
 	}
 
 	@OnFortuityEvent(ExampleEvent.class)

@@ -53,6 +53,11 @@ public class WicketFortuityTest {
 
 		cModel = (IModel<Integer>) component.getDefaultModel();
 		assertEquals(2, cModel.getObject().intValue());
+
+		EventReceivingPanel receiver = (EventReceivingPanel) tester
+				.getComponentFromLastRenderedPage("receiver");
+
+		assertEquals(2, receiver.getValue());
 	}
 
 	@After
