@@ -16,6 +16,7 @@
 package com.fortuityframework.wicket;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -23,6 +24,7 @@ import java.util.*;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageReference;
+import org.apache.wicket.Session;
 import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
@@ -59,6 +61,8 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 
 	Map<Class<?>, Set<ComponentEventListener>> listeners = new HashMap<Class<?>, Set<ComponentEventListener>>();
 
+	private static Map<String, WeakReference<Session>> sessionReferences = new HashMap<String, WeakReference<Session>>();
+
 	private static Logger log = LoggerFactory
 			.getLogger(WicketEventListenerLocator.class);
 
@@ -88,6 +92,18 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 			Duration duration) {
 		this.chainedLocator = chainedLocator;
 		this.duration = duration;
+	}
+
+	static Session getSession(String id) {
+		return sessionReferences.containsKey(id) ? sessionReferences.get(id)
+				.get() : null;
+	}
+
+	static void addSession(Session session) {
+		if (!sessionReferences.containsKey(session)) {
+			sessionReferences.put(session.getId(), new WeakReference<Session>(
+					session));
+		}
 	}
 
 	/**
@@ -199,6 +215,8 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		private PageReference ref;
 		private String methodName;
 
+		private String sessionRef;
+
 		/**
 		 * Create a new event listener for the given method of the given component
 		 * @param component The component that contains the method
@@ -211,6 +229,12 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 			this.isPage = component instanceof Page;
 
 			this.methodName = eventMethod.getName();
+
+			Session session = Session.get();
+
+			addSession(session);
+
+			this.sessionRef = session.getId();
 
 			// Add a callback to report the reference before render, since
 			// we cannot get a reliable PageReference at this stage
@@ -244,19 +268,27 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		public void dispatchEvent(EventContext<?> context)
 				throws EventException {
 			try {
-				// Check if the component still exists
-				Component component = isPage ? ref.getPage() : ref.getPage()
-						.get(componentPath);
+				Session session = getSession(sessionRef);
 
-				Method eventMethod = component.getClass().getMethod(methodName,
-						EventContext.class);
+				if (session != null && !session.isSessionInvalidated()) {
+					Page page = session.getPage(ref.getPageMapName(), Integer
+							.toString(ref.getPageNumber()), ref
+							.getPageVersion());
 
-				if (component != null) {
-					// Invoke the event
-					eventMethod.invoke(component, context);
-					// Detach the component
-					if (component.hasBeenRendered()) {
-						component.detach();
+					// Check if the component still exists
+					Component component = isPage ? page : page
+							.get(componentPath);
+
+					Method eventMethod = component.getClass().getMethod(
+							methodName, EventContext.class);
+
+					if (component != null) {
+						// Invoke the event
+						eventMethod.invoke(component, context);
+						// Detach the component
+						if (component.hasBeenRendered()) {
+							component.detach();
+						}
 					}
 				}
 			} catch (IllegalArgumentException e) {
