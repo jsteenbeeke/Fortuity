@@ -13,6 +13,10 @@
 	<name>fortuity-wicket</name>
 	<url>http://maven.apache.org</url>
 
+	<description>
+		Wicket integration for the Fortuity Framework
+	</description>
+
 	<developers>
 		<developer>
 			<id>jeroen</id>
@@ -38,7 +42,6 @@
 		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-wicket/</url>
 	</scm>
 
-	
 	<licenses>
 		<license>
 			<name>Apache 2</name>

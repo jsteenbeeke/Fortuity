@@ -10,6 +10,44 @@
 	<name>fortuity-spring</name>
 	<version>${fortuity.version}</version>
 	<url>http://maven.apache.org</url>
+
+	<description>
+		Spring Integration for the Fortuity Framework
+	</description>
+
+	<developers>
+		<developer>
+			<id>jeroen</id>
+			<name>Jeroen Steenbeeke</name>
+			<email>j.steenbeeke.ml@gmail.com</email>
+			<roles>
+				<role>Project Lead</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
+	
+	<issueManagement>
+		<system>Trac</system>
+		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+	</issueManagement>
+	
+	<scm>
+		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-spring/</connection>
+		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-spring/</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-spring/</url>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>	
 	
 	<dependencies>
 		<dependency>
