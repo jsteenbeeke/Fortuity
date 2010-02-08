@@ -23,6 +23,10 @@ public class StatefulComponentPage extends WebPage {
 
 	private IModel<Integer> counterModel;
 
+	/**
+	 * Creates a new stateful component page with the given state
+	 * @param value The value that represents the state
+	 */
 	public StatefulComponentPage(int value) {
 		super();
 
@@ -56,6 +60,10 @@ public class StatefulComponentPage extends WebPage {
 		add(new EventReceivingPanel("receiver"));
 	}
 
+	/**
+	 * Responds to ExampleEvents
+	 * @param context The context containing the event
+	 */
 	@OnFortuityEvent(ExampleEvent.class)
 	public void onTestEvent(EventContext<ExampleEvent> context) {
 		counterModel.setObject(counterModel.getObject() + 1);

@@ -22,6 +22,7 @@ import com.fortuityframework.core.event.Event;
  * 
  * @author Jeroen Steenbeeke
  * 
+ * @param <T> The type of event source for this event
  */
 public abstract class JPAEntityEvent<T> implements Event<T> {
 	private final T entity;

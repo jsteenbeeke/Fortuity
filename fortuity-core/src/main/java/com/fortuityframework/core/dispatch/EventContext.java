@@ -22,6 +22,7 @@ import com.fortuityframework.core.event.Event;
  * 
  * @author Jeroen Steenbeeke
  * 
+ * @param <T> The type of event wrapped by this context
  */
 public interface EventContext<T extends Event<?>> {
 	/**

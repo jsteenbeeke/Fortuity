@@ -16,12 +16,13 @@
 package com.fortuityframework.core.dispatch;
 
 /**
- * Checked exception that is thrown whenever the execution of an event fails
+ * Unchecked exception that is thrown whenever the execution of an event fails. This usually means that
+ * something unexpected happened, and should be considered unrecoverable
  * 
  * @author Jeroen Steenbeeke
  * 
  */
-public class EventException extends Exception {
+public class EventException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

@@ -23,6 +23,7 @@ import java.util.Map;
  * 
  * @author Jeroen Steenbeeke
  *
+ * @param <T> The type of event source for this event
  */
 public abstract class JPAPreviousValueAwareEntityUpdateEvent<T> extends
 		JPAEntityUpdateEvent<T> {

@@ -85,7 +85,7 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 
 	/**
 	 * Creates a new event listener locator that chains to the given locator, and expires after the specified duration has passed
-	 * @param chainedLocator
+	 * @param chainedLocator The locator that requests should be chained to if this one cannot find the reference
 	 * @param duration How long a component can be held until it expires
 	 */
 	public WicketEventListenerLocator(EventListenerLocator chainedLocator,

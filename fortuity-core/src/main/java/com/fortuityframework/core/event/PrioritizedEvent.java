@@ -20,6 +20,7 @@ package com.fortuityframework.core.event;
  * 
  * @author Jeroen Steenbeeke
  * 
+ * @param <T> The type of event source for this event
  */
 public interface PrioritizedEvent<T> extends Event<T> {
 	/**

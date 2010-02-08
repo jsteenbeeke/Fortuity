@@ -60,6 +60,9 @@ public class PriorityComparatorTest {
 		}
 	}
 
+	/**
+	 * Tests the basic ordering of a priority queue broker
+	 */
 	@Test
 	public void testBasicOrdering() {
 		List<PrioritizedEvent<?>> events = new LinkedList<PrioritizedEvent<?>>();

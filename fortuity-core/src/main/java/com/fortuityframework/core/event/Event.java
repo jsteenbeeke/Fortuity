@@ -20,6 +20,7 @@ package com.fortuityframework.core.event;
  * 
  * @author Jeroen Steenbeeke
  * 
+ * @param <T> The type of source object for this event
  */
 public interface Event<T> {
 	/**

@@ -20,6 +20,7 @@ package com.fortuityframework.core.event.jpa;
  * 
  * @author Jeroen Steenbeeke
  * 
+ * @param <T> The type of event source for this event
  */
 public abstract class JPAEntityLoadEvent<T> extends JPAEntityEvent<T> {
 	/**

@@ -31,11 +31,17 @@ import org.junit.Test;
 public class WicketFortuityTest {
 	private WicketTester tester;
 
+	/**
+	 * Create the Wicket tester
+	 */
 	@Before
 	public void prepareTester() {
 		tester = new WicketTester(new FortuityTestApplication());
 	}
 
+	/**
+	 * Test Wicket component event responses
+	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testEvents() {
@@ -60,6 +66,9 @@ public class WicketFortuityTest {
 		assertEquals(2, receiver.getValue());
 	}
 
+	/**
+	 * Close the Wicket tester
+	 */
 	@After
 	public void closeTester() {
 		tester.destroy();

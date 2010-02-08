@@ -83,7 +83,7 @@ public abstract class EventBroker {
 	 * WARNING: Do not call this method from within a method that is itself an event responder! Use the
 	 * triggerEvent method of EventContext instead
 	 * 
-	 * @param event The event to dispatch
+	 * @param events The events to dispatch
 	 * @throws EventException If an event encountered an error
 	 */
 	public final void dispatchEvents(List<Event<?>> events)

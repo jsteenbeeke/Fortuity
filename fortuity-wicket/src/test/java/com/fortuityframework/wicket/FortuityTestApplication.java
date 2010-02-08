@@ -51,6 +51,9 @@ public class FortuityTestApplication extends WebApplication {
 				locator));
 	}
 
+	/**
+	 * @return This application's event broker
+	 */
 	public EventBroker getEventBroker() {
 		return broker;
 	}

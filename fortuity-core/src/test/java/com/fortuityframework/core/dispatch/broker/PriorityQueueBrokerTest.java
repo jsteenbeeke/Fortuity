@@ -22,8 +22,11 @@ import org.junit.Test;
  */
 public class PriorityQueueBrokerTest {
 
-    @Test
-    public void testQueueingOrder() {
-
-    }
+	/**
+	 * Tests the execution order of the priority queue
+	 */
+	@Test
+	public void testQueueingOrder() {
+		// TODO
+	}
 }
