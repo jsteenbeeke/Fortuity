@@ -257,8 +257,6 @@ public class EventInterceptor implements Interceptor {
 			log.error("Invocation of event constructor failed", e);
 		} catch (InvocationTargetException e) {
 			log.error("Invocation of event constructor failed", e);
-		} catch (EventException e) {
-			log.error("Event handler raised an exception", e);
 		}
 	}
 
