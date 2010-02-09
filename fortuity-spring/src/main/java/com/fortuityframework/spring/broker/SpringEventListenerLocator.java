@@ -24,6 +24,8 @@ import java.util.Map;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationContextEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
 
 import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
@@ -59,8 +61,9 @@ class SpringEventListenerLocator implements ApplicationListener,
 	 */
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event instanceof ContextStartedEvent) {
-			ApplicationContext context = ((ContextStartedEvent) event)
+		if (event instanceof ContextStartedEvent
+				|| event instanceof ContextRefreshedEvent) {
+			ApplicationContext context = ((ApplicationContextEvent) event)
 					.getApplicationContext();
 
 			for (String beanDefinitionName : context.getBeanDefinitionNames()) {

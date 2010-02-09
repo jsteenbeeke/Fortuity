@@ -17,6 +17,7 @@ package com.fortuityframework.spring.broker;
 
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
 
 import com.fortuityframework.core.dispatch.EventListenerLocator;
@@ -55,7 +56,8 @@ public class SpringLIFOQueueEventBroker extends LIFOQueueEventBroker implements
 	 */
 	@Override
 	public void onApplicationEvent(ApplicationEvent event) {
-		if (event instanceof ContextStartedEvent) {
+		if (event instanceof ContextStartedEvent
+				|| event instanceof ContextRefreshedEvent) {
 			SpringEventListenerLocator locator = new SpringEventListenerLocator();
 			locator.onApplicationEvent(event);
 			locator.setChainedLocator(chainedLocator);
