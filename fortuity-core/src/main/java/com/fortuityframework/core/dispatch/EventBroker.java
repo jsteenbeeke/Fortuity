@@ -107,20 +107,27 @@ public abstract class EventBroker {
 		// This method may not be recursively called - it may break event
 		// ordering
 		if (!inProcessor.get()) {
-			inProcessor.set(true);
-			while (!getQueue().isEmpty()) {
-				Event<?> event = getQueue().remove(0);
+			try {
+				inProcessor.set(true);
+				while (!getQueue().isEmpty()) {
+					Event<?> event = getQueue().remove(0);
 
-				EventContext<?> context = createContext(event);
+					EventContext<?> context = createContext(event);
 
-				Class<? extends Event<?>> eventClass = getEventClass(event);
+					Class<? extends Event<?>> eventClass = getEventClass(event);
 
-				for (EventListener listener : locator
-						.getEventListeners(eventClass)) {
-					listener.dispatchEvent(context);
+					// Prevent NullPointerException
+					if (locator != null) {
+						for (EventListener listener : locator
+								.getEventListeners(eventClass)) {
+							listener.dispatchEvent(context);
+						}
+					}
 				}
+			} finally {
+				// Prevent deadlocking the event processor
+				inProcessor.set(false);
 			}
-			inProcessor.set(false);
 		}
 	}
 
