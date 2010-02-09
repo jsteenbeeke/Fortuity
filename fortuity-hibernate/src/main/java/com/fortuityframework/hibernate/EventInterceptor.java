@@ -242,6 +242,7 @@ public class EventInterceptor implements Interceptor {
 		} catch (SecurityException e) {
 			log.error("Declared event " + eventClass.getName()
 					+ " does not have an accessible constructor", e);
+			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
 			log
 					.error(
@@ -249,14 +250,19 @@ public class EventInterceptor implements Interceptor {
 									+ eventClass.getName()
 									+ " does not have a proper default constructor. Please extend the default constructor of JPAPropertyChangeEvent or that of JPAPreviousValueAwarePropertyChangeEvent",
 							e);
+			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (java.lang.InstantiationException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (IllegalAccessException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (InvocationTargetException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		}
 	}
 
@@ -288,6 +294,7 @@ public class EventInterceptor implements Interceptor {
 		} catch (SecurityException e) {
 			log.error("Declared event " + eventClass.getName()
 					+ " does not have an accessible constructor", e);
+			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
 			log
 					.error(
@@ -295,16 +302,19 @@ public class EventInterceptor implements Interceptor {
 									+ eventClass.getName()
 									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityUpdateEvent or JPAPreviousValueAwareEntityUpdateEvent",
 							e);
+			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (java.lang.InstantiationException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (IllegalAccessException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (InvocationTargetException e) {
 			log.error("Invocation of event constructor failed", e);
-		} catch (EventException e) {
-			log.error("Event handler raised an exception", e);
+			throw new EventException(e);
 		}
 	}
 
@@ -347,6 +357,7 @@ public class EventInterceptor implements Interceptor {
 		} catch (SecurityException e) {
 			log.error("Declared event " + eventClass.getName()
 					+ " does not have an accessible constructor", e);
+			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
 			log
 					.error(
@@ -354,16 +365,19 @@ public class EventInterceptor implements Interceptor {
 									+ eventClass.getName()
 									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityLoadEvent",
 							e);
+			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (java.lang.InstantiationException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (IllegalAccessException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (InvocationTargetException e) {
 			log.error("Invocation of event constructor failed", e);
-		} catch (EventException e) {
-			log.error("Event handler raised an exception", e);
+			throw new EventException(e);
 		}
 	}
 
@@ -378,6 +392,7 @@ public class EventInterceptor implements Interceptor {
 		} catch (SecurityException e) {
 			log.error("Declared event " + eventClass.getName()
 					+ " does not have an accessible constructor", e);
+			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
 			log
 					.error(
@@ -385,16 +400,19 @@ public class EventInterceptor implements Interceptor {
 									+ eventClass.getName()
 									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityDeleteEvent",
 							e);
+			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (java.lang.InstantiationException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (IllegalAccessException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (InvocationTargetException e) {
 			log.error("Invocation of event constructor failed", e);
-		} catch (EventException e) {
-			log.error("Event handler raised an exception", e);
+			throw new EventException(e);
 		}
 	}
 
@@ -410,6 +428,7 @@ public class EventInterceptor implements Interceptor {
 		} catch (SecurityException e) {
 			log.error("Declared event " + eventClass.getName()
 					+ " does not have an accessible constructor", e);
+			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
 			log
 					.error(
@@ -417,16 +436,19 @@ public class EventInterceptor implements Interceptor {
 									+ eventClass.getName()
 									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityCreateEvent",
 							e);
+			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (java.lang.InstantiationException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (IllegalAccessException e) {
 			log.error("Invocation of event constructor failed", e);
+			throw new EventException(e);
 		} catch (InvocationTargetException e) {
 			log.error("Invocation of event constructor failed", e);
-		} catch (EventException e) {
-			log.error("Event handler raised an exception", e);
+			throw new EventException(e);
 		}
 	}
 
