@@ -67,10 +67,13 @@ class SpringEventListener implements EventListener {
 			method.invoke(bean, context);
 		} catch (IllegalArgumentException e) {
 			log.error("Could not invoke Spring event bean method", e);
+			throw new EventException(e);
 		} catch (IllegalAccessException e) {
 			log.error("Could not invoke Spring event bean method", e);
+			throw new EventException(e);
 		} catch (InvocationTargetException e) {
 			log.error("Could not invoke Spring event bean method", e);
+			throw new EventException(e);
 		}
 
 	}
