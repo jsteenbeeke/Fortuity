@@ -100,7 +100,6 @@ public abstract class EventBroker {
 	 * listening for the given events to be called. Event listeners can trigger new events in turn,
 	 * in which case the implementing class can decide in which order they should be executed.
 	 * 
-	 * @param event The event to dispatch
 	 * @throws EventException If the execution of the event goes awry
 	 */
 	protected final synchronized void processEvents() throws EventException {
