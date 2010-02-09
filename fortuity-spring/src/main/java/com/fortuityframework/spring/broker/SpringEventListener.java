@@ -17,6 +17,7 @@ package com.fortuityframework.spring.broker;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +65,16 @@ class SpringEventListener implements EventListener {
 		Object bean = applicationContext.getBean(beanName);
 
 		try {
-			method.invoke(bean, context);
+			if (!method.getDeclaringClass().isAssignableFrom(bean.getClass())) {
+				try {
+					Proxy.getInvocationHandler(bean).invoke(bean, method,
+							new Object[] { context });
+				} catch (Throwable e) {
+					throw new EventException("Could not invoke proxy method", e);
+				}
+			} else {
+				method.invoke(bean, context);
+			}
 		} catch (IllegalArgumentException e) {
 			log.error("Could not invoke Spring event bean method", e);
 			throw new EventException(e);
