@@ -18,6 +18,9 @@ package com.fortuityframework.core.dispatch;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fortuityframework.core.event.Event;
 
 /**
@@ -33,6 +36,9 @@ import com.fortuityframework.core.event.Event;
  * 
  */
 public abstract class EventBroker {
+	private static final Logger log = LoggerFactory
+			.getLogger(EventBroker.class);
+
 	private EventListenerLocator locator;
 
 	private List<Event<?>> queue = new LinkedList<Event<?>>();
@@ -111,6 +117,9 @@ public abstract class EventBroker {
 				while (!getQueue().isEmpty()) {
 					Event<?> event = getQueue().remove(0);
 
+					log.info("Processing event of type "
+							+ event.getClass().getName());
+
 					EventContext<?> context = createContext(event);
 
 					Class<? extends Event<?>> eventClass = getEventClass(event);
@@ -123,6 +132,14 @@ public abstract class EventBroker {
 						}
 					}
 				}
+			} catch (EventException e) {
+				log.error("Event processing error message");
+				log.error(e.getMessage(), e);
+				throw e;
+			} catch (RuntimeException e) {
+				log.error("Event processing error message");
+				log.error(e.getMessage(), e);
+				throw e;
 			} finally {
 				// Prevent deadlocking the event processor
 				inProcessor.set(false);
