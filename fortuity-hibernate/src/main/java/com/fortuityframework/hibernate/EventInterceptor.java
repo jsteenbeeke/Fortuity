@@ -35,10 +35,13 @@ import com.fortuityframework.core.annotation.jpa.FortuityEntity;
 import com.fortuityframework.core.annotation.jpa.FortuityProperty;
 import com.fortuityframework.core.dispatch.EventBroker;
 import com.fortuityframework.core.dispatch.EventException;
+import com.fortuityframework.core.dispatch.IEventBroker;
 import com.fortuityframework.core.event.Event;
 import com.fortuityframework.core.event.jpa.*;
 
 /**
+ * Interceptor to use with Hibernate to create property and entity change events
+ * 
  * @author Jeroen Steenbeeke
  * 
  */
@@ -48,11 +51,15 @@ public class EventInterceptor implements Interceptor {
 	private static final Logger log = LoggerFactory
 			.getLogger(EventInterceptor.class);
 
-	private EventBroker broker;
+	private IEventBroker broker;
 
 	private Interceptor chainedInterceptor;
 
-	public EventInterceptor(EventBroker broker) {
+	/**
+	 * Creates a new event interceptor
+	 * @param broker The eventbroker to use for dispatching events
+	 */
+	public EventInterceptor(IEventBroker broker) {
 		this.broker = broker;
 		// Anonymous class to avoid private constructor
 		this.chainedInterceptor = new EmptyInterceptor() {
@@ -60,6 +67,11 @@ public class EventInterceptor implements Interceptor {
 		};
 	}
 
+	/**
+	 * Creates a new event interceptor
+	 * @param broker The eventbroker to use for dispatching events
+	 * @param chainedInterceptor An additional interceptor that Hibernate events should be chained to
+	 */
 	public EventInterceptor(EventBroker broker, Interceptor chainedInterceptor) {
 		this.broker = broker;
 		this.chainedInterceptor = chainedInterceptor;

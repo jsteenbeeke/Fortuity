@@ -110,9 +110,6 @@ class SpringEventListenerLocator implements ApplicationListener,
 				new SpringEventListener(beanName, method, context));
 	}
 
-	/**
-	 * @see net.elanevent.core.dispatch.EventListenerLocator#getEventListeners(java.lang.Class)
-	 */
 	@Override
 	public List<EventListener> getEventListeners(
 			Class<? extends Event<?>> eventClass) {

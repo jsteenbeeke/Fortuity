@@ -35,7 +35,7 @@ import com.fortuityframework.core.event.Event;
  * @author Jeroen Steenbeeke
  * 
  */
-public abstract class EventBroker {
+public abstract class EventBroker implements IEventBroker {
 	private static final Logger log = LoggerFactory
 			.getLogger(EventBroker.class);
 
@@ -78,6 +78,7 @@ public abstract class EventBroker {
 	 * @param event The event to dispatch
 	 * @throws EventException If an event encountered an error
 	 */
+	@Override
 	public final void dispatchEvent(Event<?> event) throws EventException {
 		enqueueEvent(event);
 
@@ -92,6 +93,7 @@ public abstract class EventBroker {
 	 * @param events The events to dispatch
 	 * @throws EventException If an event encountered an error
 	 */
+	@Override
 	public final void dispatchEvents(List<Event<?>> events)
 			throws EventException {
 		for (Event<?> event : events) {
