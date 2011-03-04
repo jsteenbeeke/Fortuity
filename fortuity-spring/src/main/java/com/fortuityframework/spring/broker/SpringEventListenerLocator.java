@@ -69,8 +69,10 @@ class SpringEventListenerLocator implements ApplicationListener,
 			for (String beanDefinitionName : context.getBeanDefinitionNames()) {
 				Class<?> type = context.getType(beanDefinitionName);
 
-				for (Method m : type.getMethods()) {
-					registerMethodAsListener(context, beanDefinitionName, m);
+				if (type != null && type.getMethods() != null) {
+					for (Method m : type.getMethods()) {
+						registerMethodAsListener(context, beanDefinitionName, m);
+					}
 				}
 			}
 		}
