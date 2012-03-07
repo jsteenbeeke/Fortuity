@@ -26,17 +26,9 @@
 	</developers>
 	
 	<issueManagement>
-		<system>Trac</system>
-		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+		<system>Github</system>
+		<url>https://github.com/jsteenbeeke/Fortuity/issues</url>
 	</issueManagement>
-	
-	<scm>
-		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/</connection>
-		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/</url>
-	</scm>
-
 	
 	<licenses>
 		<license>
@@ -62,14 +54,6 @@
 		</dependencies>
 	</dependencyManagement>
 	
-	<distributionManagement>
-		<repository>
-			<id>fortuity-repo</id>
-			<url>scpexe://shell.sourceforge.net/home/groups/f/fo/fortuity/htdocs/repo/</url>
-		</repository>
-	</distributionManagement>
-	
-  
 	<build>
 		<pluginManagement>
 			<plugins>
