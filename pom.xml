@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortuityframework</groupId>
 	<artifactId>fortuity-parent</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.5-SNAPSHOT</version>
 	<name>Fortuity</name>
 	<url>http://www.fortuityframework.com/</url>
 	<inceptionYear>2009</inceptionYear>
@@ -29,6 +29,11 @@
 		<system>Github</system>
 		<url>https://github.com/jsteenbeeke/Fortuity/issues</url>
 	</issueManagement>
+
+	<scm>
+		<connection>scm:git://github.com/jsteenbeeke/Fortuity.git</connection>
+		<url>https://github.com/jsteenbeeke/Fortuity</url>
+	</scm>
 	
 	<licenses>
 		<license>
@@ -44,12 +49,12 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.5.8</version>
+				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.5</version>
+				<version>${junit.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -60,11 +65,39 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
 					<configuration>
 						<source>1.6</source>
 						<target>1.6</target>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.1.2</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8.1</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-repository-plugin</artifactId>
@@ -104,8 +137,15 @@
 	</build>
 
 	<properties>
-		<fortuity.version>1.1-SNAPSHOT</fortuity.version>
+		<fortuity.version>1.5-SNAPSHOT</fortuity.version>
+		<hibernate.version>3.5.6-Final</hibernate.version>
+		<hsqldb.version>2.2.8</hsqldb.version>
+		<jetty.version>6.1.22</jetty.version>
+		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<slf4j.version>1.6.4</slf4j.version>
+		<spring.version>3.1.1.RELEASE</spring.version>
+		<wicket.version>1.5.4</wicket.version>
 	</properties>
 
 	<modules>

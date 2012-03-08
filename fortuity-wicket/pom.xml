@@ -5,11 +5,11 @@
 	<parent>
 		<artifactId>fortuity-parent</artifactId>
 		<groupId>com.fortuityframework</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT</version>
 	</parent>
 	<groupId>com.fortuityframework</groupId>
 	<artifactId>fortuity-wicket</artifactId>
-	<version>${fortuity.version}</version>
+	<version>1.5-SNAPSHOT</version>
 	<name>fortuity-wicket</name>
 	<url>http://maven.apache.org</url>
 
@@ -31,15 +31,13 @@
 	</developers>
 	
 	<issueManagement>
-		<system>Trac</system>
-		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+		<system>Github</system>
+		<url>https://github.com/jsteenbeeke/Fortuity/issues</url>
 	</issueManagement>
-	
+
 	<scm>
-		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-wicket/</connection>
-		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-wicket/</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-wicket/</url>
+		<connection>scm:git://github.com/jsteenbeeke/Fortuity.git</connection>
+		<url>https://github.com/jsteenbeeke/Fortuity</url>
 	</scm>
 
 	<licenses>
@@ -59,8 +57,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket</artifactId>
-			<version>1.4.5</version>
+			<artifactId>wicket-core</artifactId>
+			<version>${wicket.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -89,38 +87,12 @@
 	 	<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.8</version>
+			<version>${slf4j.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 		<testResources>
 			<testResource>
 				<directory>src/test/java</directory>
@@ -133,8 +105,4 @@
 			</testResource>
 		</testResources>
     </build>
-	
-	<properties>
-		<jetty.version>6.1.22</jetty.version>
-	</properties>
 </project>

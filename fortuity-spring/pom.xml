@@ -2,13 +2,13 @@
 	<parent>
 		<artifactId>fortuity-parent</artifactId>
 		<groupId>com.fortuityframework</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortuityframework</groupId>
 	<artifactId>fortuity-spring</artifactId>
 	<name>fortuity-spring</name>
-	<version>${fortuity.version}</version>
+	<version>1.5-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 
 	<description>
@@ -27,17 +27,15 @@
 			<timezone>1</timezone>
 		</developer>
 	</developers>
-	
+
 	<issueManagement>
-		<system>Trac</system>
-		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+		<system>Github</system>
+		<url>https://github.com/jsteenbeeke/Fortuity/issues</url>
 	</issueManagement>
-	
+
 	<scm>
-		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-spring/</connection>
-		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-spring/</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-spring/</url>
+		<connection>scm:git://github.com/jsteenbeeke/Fortuity.git</connection>
+		<url>https://github.com/jsteenbeeke/Fortuity</url>
 	</scm>
 
 	<licenses>
@@ -58,7 +56,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>2.5.6</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -69,38 +67,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.8</version>
+			<version>${slf4j.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 		<testResources>
 			<testResource>
 				<directory>${basedir}/src/test/resources</directory>

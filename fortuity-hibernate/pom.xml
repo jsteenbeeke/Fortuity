@@ -1,15 +1,16 @@
-<?xml version="1.0"?><project>
-	<inceptionYear>2009</inceptionYear>
+<?xml version="1.0"?>
+<project>
 	<parent>
 	    	<artifactId>fortuity-parent</artifactId>
 	    	<groupId>com.fortuityframework</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortuityframework</groupId>
 	<artifactId>fortuity-hibernate</artifactId>
 	<name>fortuity-hibernate</name>
-    	<version>${fortuity.version}</version>
+	<inceptionYear>2009</inceptionYear>
+    	<version>1.5-SNAPSHOT</version>
 	<url>http://www.fortuityframework.com</url>
 	<description>
 		Hibernate integration for Fortuity
@@ -29,18 +30,15 @@
 	</developers>
 	
 	<issueManagement>
-		<system>Trac</system>
-		<url>https://sourceforge.net/apps/trac/fortuity/</url>
+		<system>Github</system>
+		<url>https://github.com/jsteenbeeke/Fortuity/issues</url>
 	</issueManagement>
-	
+
 	<scm>
-		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-hibernate/</connection>
-		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-hibernate/</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-hibernate/</url>
+		<connection>scm:git://github.com/jsteenbeeke/Fortuity.git</connection>
+		<url>https://github.com/jsteenbeeke/Fortuity</url>
 	</scm>
 
-	
 	<licenses>
 		<license>
 			<name>Apache 2</name>
@@ -59,7 +57,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-annotations</artifactId>
-			<version>3.4.0.GA</version>
+			<version>${hibernate.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -68,15 +66,15 @@
 			<version>${fortuity.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>hsqldb</groupId>
+			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
+			<version>${hsqldb.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.8</version>
+			<version>${slf4j.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -86,33 +84,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>

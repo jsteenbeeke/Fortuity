@@ -2,13 +2,13 @@
 	<parent>
 		<artifactId>fortuity-parent</artifactId>
 		<groupId>com.fortuityframework</groupId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortuityframework</groupId>
 	<artifactId>fortuity-core</artifactId>
 	<name>fortuity-core</name>
-	<version>${fortuity.version}</version>
+	<version>1.5-SNAPSHOT</version>
 	<url>www.fortuityframework.com</url>
 	<description>
 		Core functionality for the Fortuity Framework
@@ -27,18 +27,16 @@
 		</developer>
 	</developers>
 	
-	<issueManagement>
-		<system>Trac</system>
-		<url>https://sourceforge.net/apps/trac/fortuity/</url>
-	</issueManagement>
-	
-	<scm>
-		<connection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-core/</connection>
-		<developerConnection>scm:svn:https://fortuity.svn.sourceforge.net/svnroot/fortuity/trunk/fortuity-core/</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://fortuity.svn.sourceforge.net/viewvc/fortuity/trunk/fortuity-core/</url>
-	</scm>
 
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/jsteenbeeke/Fortuity/issues</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git://github.com/jsteenbeeke/Fortuity.git</connection>
+		<url>https://github.com/jsteenbeeke/Fortuity</url>
+	</scm>
 	
 	<licenses>
 		<license>
@@ -60,33 +58,4 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>
