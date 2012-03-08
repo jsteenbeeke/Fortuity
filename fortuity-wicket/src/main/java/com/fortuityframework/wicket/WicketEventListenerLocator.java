@@ -276,7 +276,9 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 													.getPageId());
 								}
 							} else {
-
+								lastPageIdReferences.put(sess.getId(),
+										ComponentEventListener.this.ref
+												.getPageId());
 							}
 						}
 					}
