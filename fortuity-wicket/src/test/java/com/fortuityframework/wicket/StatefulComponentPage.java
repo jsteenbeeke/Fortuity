@@ -18,6 +18,8 @@ import com.fortuityframework.core.dispatch.EventException;
  * @author Jeroen Steenbeeke
  */
 public class StatefulComponentPage extends WebPage {
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger logger = LoggerFactory
 			.getLogger(StatefulComponentPage.class);
 
@@ -25,7 +27,9 @@ public class StatefulComponentPage extends WebPage {
 
 	/**
 	 * Creates a new stateful component page with the given state
-	 * @param value The value that represents the state
+	 * 
+	 * @param value
+	 *            The value that represents the state
 	 */
 	public StatefulComponentPage(int value) {
 		super();
@@ -50,7 +54,7 @@ public class StatefulComponentPage extends WebPage {
 				}
 
 				if (target != null) {
-					target.addComponent(getPage().get("counter"));
+					target.add(getPage().get("counter"));
 				}
 
 			}
@@ -62,7 +66,9 @@ public class StatefulComponentPage extends WebPage {
 
 	/**
 	 * Responds to ExampleEvents
-	 * @param context The context containing the event
+	 * 
+	 * @param context
+	 *            The context containing the event
 	 */
 	@OnFortuityEvent(ExampleEvent.class)
 	public void onTestEvent(EventContext<ExampleEvent> context) {

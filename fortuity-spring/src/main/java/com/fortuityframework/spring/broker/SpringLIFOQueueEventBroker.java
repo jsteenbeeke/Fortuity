@@ -25,27 +25,31 @@ import com.fortuityframework.core.dispatch.NullEventListenerLocator;
 import com.fortuityframework.core.dispatch.broker.LIFOQueueEventBroker;
 
 /**
- * LIFO Queue Event broker for use with the Spring framework. To use this broker, only a single line of configuration
- * is needed in your Spring context.
+ * LIFO Queue Event broker for use with the Spring framework. To use this
+ * broker, only a single line of configuration is needed in your Spring context.
  * 
  * {@code <bean id="eventBroker" class="com.fortuityframework.spring.broker.SpringLIFOQueueEventBroker"></bean>}
  * 
  * @author Jeroen Steenbeeke
  */
 public class SpringLIFOQueueEventBroker extends LIFOQueueEventBroker implements
-		ApplicationListener {
+		ApplicationListener<ApplicationEvent> {
 	private EventListenerLocator chainedLocator;
 
 	/**
-	 * Create a new Spring LIFO Queue event broker that does not chain the events after processing by Spring
+	 * Create a new Spring LIFO Queue event broker that does not chain the
+	 * events after processing by Spring
 	 */
 	public SpringLIFOQueueEventBroker() {
 		chainedLocator = new NullEventListenerLocator();
 	}
 
 	/**
-	 * Create a new Spring LIFO Queue event broker that chains the events to an additional locator after processing by Spring
-	 * @param chainedLocator The locator to chain to
+	 * Create a new Spring LIFO Queue event broker that chains the events to an
+	 * additional locator after processing by Spring
+	 * 
+	 * @param chainedLocator
+	 *            The locator to chain to
 	 */
 	public SpringLIFOQueueEventBroker(EventListenerLocator chainedLocator) {
 		this.chainedLocator = chainedLocator;

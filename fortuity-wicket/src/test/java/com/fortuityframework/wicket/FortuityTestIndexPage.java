@@ -7,6 +7,8 @@ import org.apache.wicket.markup.html.link.Link;
  * @author Jeroen Steenbeeke
  */
 public class FortuityTestIndexPage extends WebPage {
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Create a new test index page
 	 */

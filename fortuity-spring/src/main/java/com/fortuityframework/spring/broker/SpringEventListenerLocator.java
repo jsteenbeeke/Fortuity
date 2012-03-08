@@ -41,14 +41,14 @@ import com.fortuityframework.core.event.Event;
  * @author Jeroen Steenbeeke
  * 
  */
-class SpringEventListenerLocator implements ApplicationListener,
-		EventListenerLocator {
+class SpringEventListenerLocator implements
+		ApplicationListener<ApplicationEvent>, EventListenerLocator {
 	private Map<Class<? extends Event<?>>, List<EventListener>> listeners;
 
 	private EventListenerLocator chainedLocator;
 
 	/**
-	 * Create a new SpringEventListenerLocator. 
+	 * Create a new SpringEventListenerLocator.
 	 * 
 	 */
 	public SpringEventListenerLocator() {
@@ -95,7 +95,6 @@ class SpringEventListenerLocator implements ApplicationListener,
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends Event<?>>[] getEvents(OnFortuityEvent eventRef) {
 		Class<? extends Event<?>>[] events = (Class<? extends Event<?>>[]) eventRef
 				.value();
@@ -136,7 +135,9 @@ class SpringEventListenerLocator implements ApplicationListener,
 
 	/**
 	 * Chains another locator to add a different channel of event handling
-	 * @param chainedLocator The locator to chain
+	 * 
+	 * @param chainedLocator
+	 *            The locator to chain
 	 */
 	public void setChainedLocator(EventListenerLocator chainedLocator) {
 		this.chainedLocator = chainedLocator;

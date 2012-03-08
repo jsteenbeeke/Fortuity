@@ -15,7 +15,11 @@
  */
 package com.fortuityframework.core.annotation.jpa;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import com.fortuityframework.core.event.jpa.JPAPropertyChangeEvent;
 
@@ -27,7 +31,7 @@ import com.fortuityframework.core.event.jpa.JPAPropertyChangeEvent;
  * 
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Target({ ElementType.METHOD, ElementType.FIELD })
 @Inherited
 public @interface FortuityProperty {
 	/**
@@ -35,6 +39,5 @@ public @interface FortuityProperty {
 	 * 
 	 * @return An array of triggered events
 	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends JPAPropertyChangeEvent>[] onChange() default {};
+	Class<? extends JPAPropertyChangeEvent<?>>[] onChange() default {};
 }

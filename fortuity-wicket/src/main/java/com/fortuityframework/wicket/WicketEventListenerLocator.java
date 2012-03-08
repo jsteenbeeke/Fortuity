@@ -19,79 +19,85 @@ import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageReference;
 import org.apache.wicket.Session;
-import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.page.IManageablePage;
+import org.apache.wicket.page.IPageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fortuityframework.core.annotation.ioc.OnFortuityEvent;
-import com.fortuityframework.core.dispatch.*;
+import com.fortuityframework.core.dispatch.EventContext;
+import com.fortuityframework.core.dispatch.EventException;
 import com.fortuityframework.core.dispatch.EventListener;
+import com.fortuityframework.core.dispatch.EventListenerLocator;
+import com.fortuityframework.core.dispatch.NullEventListenerLocator;
 import com.fortuityframework.core.event.Event;
 
 /**
- * Fortuity Event Listeners locator for use with Wicket components. When used in combination with a {@link FortuityComponentInstantiationListener},
- * this locator will delegate Fortuity events to Wicket components. It will also delegate events to other event listeners if need be (for
- * example, if using Fortuity with Spring).
+ * Fortuity Event Listeners locator for use with Wicket components. When used in
+ * combination with a {@link FortuityComponentInstantiationListener}, this
+ * locator will delegate Fortuity events to Wicket components. It will also
+ * delegate events to other event listeners if need be (for example, if using
+ * Fortuity with Spring).
  * 
- * To use this locator, you should use the following code in your WicketApplication's init() method.
+ * To use this locator, you should use the following code in your
+ * WicketApplication's init() method.
  * 
  * <pre>
- * {@code
- * WicketEventListenerLocator locator 
- * 	= new WicketEventListenerLocator(Duration.minutes(15));
- * FortuityComponentInstantiationListener listener 
- * 	= new FortuityComponentInstantiationListener(locator);
+ * {
+ * 	&#064;code
+ * 	WicketEventListenerLocator locator = new WicketEventListenerLocator(
+ * 			Duration.minutes(15));
+ * 	FortuityComponentInstantiationListener listener = new FortuityComponentInstantiationListener(
+ * 			locator);
  * }
  * </pre>
  * 
  * 
  * @author Jeroen Steenbeeke
- *
+ * 
  */
 public class WicketEventListenerLocator implements EventListenerLocator {
 	private EventListenerLocator chainedLocator;
-	private Duration duration;
 
 	Map<Class<?>, Set<ComponentEventListener>> listeners = new HashMap<Class<?>, Set<ComponentEventListener>>();
 
 	private static Map<String, WeakReference<Session>> sessionReferences = new HashMap<String, WeakReference<Session>>();
 
+	private static Map<String, Integer> lastPageIdReferences = new HashMap<String, Integer>();
+
 	private static Logger log = LoggerFactory
 			.getLogger(WicketEventListenerLocator.class);
 
 	/**
-	 * Creates a new event listener locator that does not chain, and expires components after one hour
+	 * Creates a new event listener locator that does not chain, and expires
+	 * components after one hour
 	 */
 	public WicketEventListenerLocator() {
 		this.chainedLocator = new NullEventListenerLocator();
-		this.duration = Duration.ONE_HOUR;
 	}
 
 	/**
-	 * Creates a new event listener locator that does not chain, and expires after the specified duration has passed
-	 * @param duration How long a component can be held until it expires
+	 * Creates a new event listener locator that chains to the given locator,
+	 * and expires after the specified duration has passed
+	 * 
+	 * @param chainedLocator
+	 *            The locator that requests should be chained to if this one
+	 *            cannot find the reference
 	 */
-	public WicketEventListenerLocator(Duration duration) {
-		this.chainedLocator = new NullEventListenerLocator();
-		this.duration = duration;
-	}
-
-	/**
-	 * Creates a new event listener locator that chains to the given locator, and expires after the specified duration has passed
-	 * @param chainedLocator The locator that requests should be chained to if this one cannot find the reference
-	 * @param duration How long a component can be held until it expires
-	 */
-	public WicketEventListenerLocator(EventListenerLocator chainedLocator,
-			Duration duration) {
+	public WicketEventListenerLocator(EventListenerLocator chainedLocator) {
 		this.chainedLocator = chainedLocator;
-		this.duration = duration;
 	}
 
 	static Session getSession(String id) {
@@ -107,9 +113,12 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 	}
 
 	/**
-	 * Called by the FortuityComponentInstantiationListener when a new component has been created. Scans the component's class structure
-	 * and adds handlers for any event response method in the component
-	 * @param component The component that was added
+	 * Called by the FortuityComponentInstantiationListener when a new component
+	 * has been created. Scans the component's class structure and adds handlers
+	 * for any event response method in the component
+	 * 
+	 * @param component
+	 *            The component that was added
 	 */
 	synchronized void onComponentAdded(Component component) {
 		Class<?> componentClass = component.getClass();
@@ -130,19 +139,17 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 								new ComponentEventListener(component, m));
 					}
 				} else {
-					log
-							.error("Fortuity event listener has incorrect parameter sequence for method "
-									+ m.toGenericString()
-									+ " on component "
-									+ component.getPath()
-									+ " of page "
-									+ component.getPage().toString());
+					log.error("Fortuity event listener has incorrect parameter sequence for method "
+							+ m.toGenericString()
+							+ " on component "
+							+ component.getPath()
+							+ " of page "
+							+ component.getPage().toString());
 				}
 			}
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends Event<?>>[] getEvents(OnFortuityEvent metadata) {
 		Class<? extends Event<?>>[] events = (Class<? extends Event<?>>[]) metadata
 				.value();
@@ -179,8 +186,7 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 
 				for (ComponentEventListener listener : listeners.get(next)) {
 					// Only dispatch to active listeners
-					if (listener.getFrom() + duration.getMilliseconds() > System
-							.currentTimeMillis()) {
+					if (listener.isActive()) {
 						result.add(listener);
 					} else {
 						// Remove inactive ones
@@ -208,7 +214,6 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 			Serializable {
 		private static final long serialVersionUID = 1L;
 
-		private long from;
 		private boolean isPage;
 
 		private String componentPath;
@@ -218,9 +223,13 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 		private String sessionRef;
 
 		/**
-		 * Create a new event listener for the given method of the given component
-		 * @param component The component that contains the method
-		 * @param eventMethod The method to invoke when it's event occurs
+		 * Create a new event listener for the given method of the given
+		 * component
+		 * 
+		 * @param component
+		 *            The component that contains the method
+		 * @param eventMethod
+		 *            The method to invoke when it's event occurs
 		 */
 		public ComponentEventListener(Component component, Method eventMethod) {
 
@@ -238,7 +247,7 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 
 			// Add a callback to report the reference before render, since
 			// we cannot get a reliable PageReference at this stage
-			component.add(new AbstractBehavior() {
+			component.add(new Behavior() {
 
 				private static final long serialVersionUID = 1L;
 
@@ -253,12 +262,38 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 						Page pg = component.getPage();
 
 						ComponentEventListener.this.ref = pg.getPageReference();
+
+						Session sess = pg.getSession();
+						if (sess != null) {
+							Integer lastId = lastPageIdReferences.get(sess
+									.getId());
+
+							if (lastId != null) {
+								if (lastId < ComponentEventListener.this.ref
+										.getPageId()) {
+									lastPageIdReferences.put(sess.getId(),
+											ComponentEventListener.this.ref
+													.getPageId());
+								}
+							} else {
+
+							}
+						}
 					}
 
 				}
 			});
+		}
 
-			this.from = System.currentTimeMillis();
+		public boolean isActive() {
+			Session session = getSession(sessionRef);
+
+			if (session != null && !session.isSessionInvalidated()) {
+				return new Integer(ref.getPageId()).equals(lastPageIdReferences
+						.get(session.getId()));
+			}
+
+			return false;
 		}
 
 		/**
@@ -271,23 +306,30 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 				Session session = getSession(sessionRef);
 
 				if (session != null && !session.isSessionInvalidated()) {
-					Page page = session.getPage(ref.getPageMapName(), Integer
-							.toString(ref.getPageNumber()), ref
-							.getPageVersion());
+					IPageManager pageManager = session.getPageManager();
 
-					// Check if the component still exists
-					Component component = isPage ? page : page
-							.get(componentPath);
+					if (isActive()) {
+						IManageablePage pg = pageManager.getPage(ref
+								.getPageId());
 
-					Method eventMethod = component.getClass().getMethod(
-							methodName, EventContext.class);
+						if (pg instanceof Page) {
+							Page page = (Page) pg;
 
-					if (component != null) {
-						// Invoke the event
-						eventMethod.invoke(component, context);
-						// Detach the component
-						if (component.hasBeenRendered()) {
-							component.detach();
+							// Check if the component still exists
+							Component component = isPage ? page : page
+									.get(componentPath);
+
+							Method eventMethod = component.getClass()
+									.getMethod(methodName, EventContext.class);
+
+							if (component != null) {
+								// Invoke the event
+								eventMethod.invoke(component, context);
+								// Detach the component
+								if (component.hasBeenRendered()) {
+									component.detach();
+								}
+							}
 						}
 					}
 				}
@@ -302,13 +344,6 @@ public class WicketEventListenerLocator implements EventListenerLocator {
 			} catch (NoSuchMethodException e) {
 				throw new EventException(e.getMessage());
 			}
-		}
-
-		/**
-		 * @return the from
-		 */
-		final long getFrom() {
-			return from;
 		}
 	}
 }

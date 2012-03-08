@@ -23,7 +23,7 @@ import com.fortuityframework.core.dispatch.broker.FIFOQueueEventBroker;
 
 /**
  * @author Jeroen Steenbeeke
- *
+ * 
  */
 public class FortuityTestApplication extends WebApplication {
 	private EventBroker broker;
@@ -47,8 +47,8 @@ public class FortuityTestApplication extends WebApplication {
 		WicketEventListenerLocator locator = new WicketEventListenerLocator();
 		broker.setEventListenerLocator(locator);
 
-		addComponentInstantiationListener(new FortuityComponentInstantiationListener(
-				locator));
+		getComponentInstantiationListeners().add(
+				new FortuityComponentInstantiationListener(locator));
 	}
 
 	/**

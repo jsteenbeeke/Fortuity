@@ -15,7 +15,11 @@
  */
 package com.fortuityframework.core.annotation.jpa;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import com.fortuityframework.core.event.jpa.JPAEntityCreateEvent;
 import com.fortuityframework.core.event.jpa.JPAEntityDeleteEvent;
@@ -39,8 +43,7 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends JPAEntityCreateEvent>[] onCreate() default {};
+	Class<? extends JPAEntityCreateEvent<?>>[] onCreate() default {};
 
 	/**
 	 * A list of events that should be triggered whenever an entity of the type
@@ -48,8 +51,7 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends JPAEntityDeleteEvent>[] onDelete() default {};
+	Class<? extends JPAEntityDeleteEvent<?>>[] onDelete() default {};
 
 	/**
 	 * A list of events that should be triggered whenever an entity of the type
@@ -57,8 +59,7 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends JPAEntityUpdateEvent>[] onUpdate() default {};
+	Class<? extends JPAEntityUpdateEvent<?>>[] onUpdate() default {};
 
 	/**
 	 * A list of events that should be triggered whenever an entity of the type
@@ -66,6 +67,5 @@ public @interface FortuityEntity {
 	 * 
 	 * @return An array of events to be triggered
 	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends JPAEntityLoadEvent>[] onLoad() default {};
+	Class<? extends JPAEntityLoadEvent<?>>[] onLoad() default {};
 }

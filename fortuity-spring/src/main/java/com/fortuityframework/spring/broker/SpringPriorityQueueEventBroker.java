@@ -25,16 +25,16 @@ import com.fortuityframework.core.dispatch.NullEventListenerLocator;
 import com.fortuityframework.core.dispatch.broker.PriorityQueueEventBroker;
 
 /**
- * Priority Queue Event broker for use with the Spring framework. To use this broker, only a single line of configuration
- * is needed in your Spring context.
+ * Priority Queue Event broker for use with the Spring framework. To use this
+ * broker, only a single line of configuration is needed in your Spring context.
  * 
  * {@code <bean id="eventBroker" class="com.fortuityframework.spring.broker.SpringPriorityQueueEventBroker"></bean>}
  * 
  * @author Jeroen Steenbeeke
- *
+ * 
  */
 public class SpringPriorityQueueEventBroker extends PriorityQueueEventBroker
-		implements ApplicationListener {
+		implements ApplicationListener<ApplicationEvent> {
 	private EventListenerLocator chainedLocator;
 
 	/**
@@ -45,8 +45,11 @@ public class SpringPriorityQueueEventBroker extends PriorityQueueEventBroker
 	}
 
 	/**
-	 * Create a new Spring Priority Queue Event Broker that chains events to another locator after processing Spring
-	 * @param chainedLocator The locator to chain events to
+	 * Create a new Spring Priority Queue Event Broker that chains events to
+	 * another locator after processing Spring
+	 * 
+	 * @param chainedLocator
+	 *            The locator to chain events to
 	 */
 	public SpringPriorityQueueEventBroker(EventListenerLocator chainedLocator) {
 		super();

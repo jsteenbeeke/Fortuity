@@ -26,7 +26,11 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
-import org.hibernate.*;
+import org.hibernate.CallbackException;
+import org.hibernate.EmptyInterceptor;
+import org.hibernate.EntityMode;
+import org.hibernate.Interceptor;
+import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +41,13 @@ import com.fortuityframework.core.dispatch.EventBroker;
 import com.fortuityframework.core.dispatch.EventException;
 import com.fortuityframework.core.dispatch.IEventBroker;
 import com.fortuityframework.core.event.Event;
-import com.fortuityframework.core.event.jpa.*;
+import com.fortuityframework.core.event.jpa.JPAEntityCreateEvent;
+import com.fortuityframework.core.event.jpa.JPAEntityDeleteEvent;
+import com.fortuityframework.core.event.jpa.JPAEntityLoadEvent;
+import com.fortuityframework.core.event.jpa.JPAEntityUpdateEvent;
+import com.fortuityframework.core.event.jpa.JPAPreviousValueAwareEntityUpdateEvent;
+import com.fortuityframework.core.event.jpa.JPAPreviousValueAwarePropertyChangeEvent;
+import com.fortuityframework.core.event.jpa.JPAPropertyChangeEvent;
 
 /**
  * Interceptor to use with Hibernate to create property and entity change events
@@ -46,8 +56,6 @@ import com.fortuityframework.core.event.jpa.*;
  * 
  */
 public class EventInterceptor implements Interceptor {
-	private static final long serialVersionUID = 1L;
-
 	private static final Logger log = LoggerFactory
 			.getLogger(EventInterceptor.class);
 
@@ -57,7 +65,9 @@ public class EventInterceptor implements Interceptor {
 
 	/**
 	 * Creates a new event interceptor
-	 * @param broker The eventbroker to use for dispatching events
+	 * 
+	 * @param broker
+	 *            The eventbroker to use for dispatching events
 	 */
 	public EventInterceptor(IEventBroker broker) {
 		this.broker = broker;
@@ -69,8 +79,12 @@ public class EventInterceptor implements Interceptor {
 
 	/**
 	 * Creates a new event interceptor
-	 * @param broker The eventbroker to use for dispatching events
-	 * @param chainedInterceptor An additional interceptor that Hibernate events should be chained to
+	 * 
+	 * @param broker
+	 *            The eventbroker to use for dispatching events
+	 * @param chainedInterceptor
+	 *            An additional interceptor that Hibernate events should be
+	 *            chained to
 	 */
 	public EventInterceptor(EventBroker broker, Interceptor chainedInterceptor) {
 		this.broker = broker;
@@ -122,7 +136,6 @@ public class EventInterceptor implements Interceptor {
 				types);
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends JPAEntityCreateEvent<?>>[] getCreateEvents(
 			FortuityEntity metadata) {
 		Class<? extends JPAEntityCreateEvent<?>>[] events = (Class<? extends JPAEntityCreateEvent<?>>[]) metadata
@@ -130,7 +143,6 @@ public class EventInterceptor implements Interceptor {
 		return events;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends JPAEntityUpdateEvent<?>>[] getUpdateEvents(
 			FortuityEntity metadata) {
 		Class<? extends JPAEntityUpdateEvent<?>>[] events = (Class<? extends JPAEntityUpdateEvent<?>>[]) metadata
@@ -138,7 +150,6 @@ public class EventInterceptor implements Interceptor {
 		return events;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends JPAEntityDeleteEvent<?>>[] getDeleteEvents(
 			FortuityEntity metadata) {
 		Class<? extends JPAEntityDeleteEvent<?>>[] events = (Class<? extends JPAEntityDeleteEvent<?>>[]) metadata
@@ -146,7 +157,6 @@ public class EventInterceptor implements Interceptor {
 		return events;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends JPAEntityLoadEvent<?>>[] getLoadEvents(
 			FortuityEntity metadata) {
 		Class<? extends JPAEntityLoadEvent<?>>[] events = (Class<? extends JPAEntityLoadEvent<?>>[]) metadata
@@ -154,7 +164,6 @@ public class EventInterceptor implements Interceptor {
 		return events;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends JPAPropertyChangeEvent<?>>[] getPropertyUpdateEvents(
 			FortuityProperty metadata) {
 		Class<? extends JPAPropertyChangeEvent<?>>[] events = (Class<? extends JPAPropertyChangeEvent<?>>[]) metadata
@@ -256,12 +265,11 @@ public class EventInterceptor implements Interceptor {
 					+ " does not have an accessible constructor", e);
 			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
-			log
-					.error(
-							"Declared event "
-									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAPropertyChangeEvent or that of JPAPreviousValueAwarePropertyChangeEvent",
-							e);
+			log.error(
+					"Declared event "
+							+ eventClass.getName()
+							+ " does not have a proper default constructor. Please extend the default constructor of JPAPropertyChangeEvent or that of JPAPreviousValueAwarePropertyChangeEvent",
+					e);
 			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -308,12 +316,11 @@ public class EventInterceptor implements Interceptor {
 					+ " does not have an accessible constructor", e);
 			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
-			log
-					.error(
-							"Declared event "
-									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityUpdateEvent or JPAPreviousValueAwareEntityUpdateEvent",
-							e);
+			log.error(
+					"Declared event "
+							+ eventClass.getName()
+							+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityUpdateEvent or JPAPreviousValueAwareEntityUpdateEvent",
+					e);
 			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -371,12 +378,11 @@ public class EventInterceptor implements Interceptor {
 					+ " does not have an accessible constructor", e);
 			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
-			log
-					.error(
-							"Declared event "
-									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityLoadEvent",
-							e);
+			log.error(
+					"Declared event "
+							+ eventClass.getName()
+							+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityLoadEvent",
+					e);
 			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -406,12 +412,11 @@ public class EventInterceptor implements Interceptor {
 					+ " does not have an accessible constructor", e);
 			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
-			log
-					.error(
-							"Declared event "
-									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityDeleteEvent",
-							e);
+			log.error(
+					"Declared event "
+							+ eventClass.getName()
+							+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityDeleteEvent",
+					e);
 			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -442,12 +447,11 @@ public class EventInterceptor implements Interceptor {
 					+ " does not have an accessible constructor", e);
 			throw new EventException(e);
 		} catch (NoSuchMethodException e) {
-			log
-					.error(
-							"Declared event "
-									+ eventClass.getName()
-									+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityCreateEvent",
-							e);
+			log.error(
+					"Declared event "
+							+ eventClass.getName()
+							+ " does not have a proper default constructor. Please extend the default constructor of JPAEntityCreateEvent",
+					e);
 			throw new EventException(e);
 		} catch (IllegalArgumentException e) {
 			log.error("Invocation of event constructor failed", e);
@@ -581,18 +585,19 @@ public class EventInterceptor implements Interceptor {
 	/**
 	 * @see org.hibernate.Interceptor#postFlush(java.util.Iterator)
 	 */
-	@SuppressWarnings("unchecked")
+
 	@Override
-	public void postFlush(Iterator entities) throws CallbackException {
+	public void postFlush(@SuppressWarnings("rawtypes") Iterator entities)
+			throws CallbackException {
 		chainedInterceptor.postFlush(entities);
 	}
 
 	/**
 	 * @see org.hibernate.Interceptor#preFlush(java.util.Iterator)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public void preFlush(Iterator entities) throws CallbackException {
+	public void preFlush(@SuppressWarnings("rawtypes") Iterator entities)
+			throws CallbackException {
 		chainedInterceptor.preFlush(entities);
 	}
 

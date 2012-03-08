@@ -15,14 +15,18 @@
  */
 package com.fortuityframework.core.annotation.ioc;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import com.fortuityframework.core.event.Event;
 
 /**
  * Annotation that indicates that the given method should be called when a
- * FortuityEvent occurs. Note that this will only happen if the class the annotated
- * method is in is in some way connected to the event broker.
+ * FortuityEvent occurs. Note that this will only happen if the class the
+ * annotated method is in is in some way connected to the event broker.
  * 
  * @author Jeroen Steenbeeke
  * 
@@ -36,6 +40,6 @@ public @interface OnFortuityEvent {
 	 * 
 	 * @return An array of events to respond to
 	 */
-	@SuppressWarnings("unchecked")
-	Class<? extends Event>[] value() default {};
+
+	Class<? extends Event<?>>[] value() default {};
 }

@@ -30,17 +30,20 @@ import com.fortuityframework.core.dispatch.EventListenerLocator;
 import com.fortuityframework.core.event.Event;
 
 /**
- * Test implementation of an Event Listener Locator that searches a single object for responder methods
+ * Test implementation of an Event Listener Locator that searches a single
+ * object for responder methods
  * 
  * @author Jeroen Steenbeeke
- *
+ * 
  */
 public class ObjectBasedLocator implements EventListenerLocator {
 	private Map<Class<? extends Event<?>>, List<EventListener>> listeners;
 
 	/**
 	 * Create a new locator for the given object
-	 * @param myObject The object to search for event responders
+	 * 
+	 * @param myObject
+	 *            The object to search for event responders
 	 */
 	public ObjectBasedLocator(Object myObject) {
 		listeners = new HashMap<Class<? extends Event<?>>, List<EventListener>>();
@@ -66,7 +69,6 @@ public class ObjectBasedLocator implements EventListenerLocator {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	private Class<? extends Event<?>>[] getEvents(OnFortuityEvent metadata) {
 		Class<? extends Event<?>>[] events = (Class<? extends Event<?>>[]) metadata
 				.value();
@@ -104,8 +106,11 @@ public class ObjectBasedLocator implements EventListenerLocator {
 
 		/**
 		 * Create a new event listener for the given method on the given object
-		 * @param method The method to invoke
-		 * @param target The object to invoke it on
+		 * 
+		 * @param method
+		 *            The method to invoke
+		 * @param target
+		 *            The object to invoke it on
 		 */
 		public MethodEventListener(Method method, Object target) {
 			this.object = target;
