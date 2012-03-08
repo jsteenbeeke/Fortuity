@@ -24,13 +24,13 @@ import org.slf4j.LoggerFactory;
 import com.fortuityframework.core.event.Event;
 
 /**
- * Basic class for dispatching events to event listeners. The EventBroker is the basic
- * worker class for the Fortuity framework. To use events, a reference to an event broker
- * is required.
+ * Basic class for dispatching events to event listeners. The EventBroker is the
+ * basic worker class for the Fortuity framework. To use events, a reference to
+ * an event broker is required.
  * 
- * When using an inversion of control framework (such as Spring), specific implementations of
- * this class exist to take advantage of the capabilities of said framework to allow "beans"
- * to respond to events.
+ * When using an inversion of control framework (such as Spring), specific
+ * implementations of this class exist to take advantage of the capabilities of
+ * said framework to allow "beans" to respond to events.
  * 
  * @author Jeroen Steenbeeke
  * 
@@ -43,6 +43,10 @@ public abstract class EventBroker implements IEventBroker {
 
 	private List<Event<?>> queue = new LinkedList<Event<?>>();
 
+	private ErrorPolicy eventErrorPolicy = ErrorPolicy.THROW;
+
+	private ErrorPolicy runtimeExceptionPolicy = ErrorPolicy.THROW;
+
 	private ThreadLocal<Boolean> inProcessor = new ThreadLocal<Boolean>() {
 		protected Boolean initialValue() {
 			return false;
@@ -50,18 +54,20 @@ public abstract class EventBroker implements IEventBroker {
 	};
 
 	/**
-	 * Sets the Event Listener locator, which is the mechanism for finding
-	 * event listeners for a given event.
+	 * Sets the Event Listener locator, which is the mechanism for finding event
+	 * listeners for a given event.
 	 * 
-	 * @param locator The locator to use
+	 * @param locator
+	 *            The locator to use
 	 */
 	public final void setEventListenerLocator(EventListenerLocator locator) {
 		this.locator = locator;
 	}
 
 	/**
-	 * Get a reference to the event queue of this broker. When an implementing class
-	 * receives a new event, it can use a specific ordering mechanism to modify the queue.
+	 * Get a reference to the event queue of this broker. When an implementing
+	 * class receives a new event, it can use a specific ordering mechanism to
+	 * modify the queue.
 	 * 
 	 * Normally this method should not be invoked except by the framework.
 	 * 
@@ -72,11 +78,37 @@ public abstract class EventBroker implements IEventBroker {
 	}
 
 	/**
-	 * Dispatch a single event to be processed. WARNING: Do not call this method from within a method that is
-	 * itself an event responder! Use the triggerEvent method of EventContext instead
+	 * Determines what the event broker should do in case of Fortuity errors
+	 * (usually the case when the calling of event handlers fails). Default is
+	 * THROW.
 	 * 
-	 * @param event The event to dispatch
-	 * @throws EventException If an event encountered an error
+	 * @param errorPolicy
+	 *            The policy to set
+	 */
+	public void setEventErrorPolicy(ErrorPolicy eventErrorPolicy) {
+		this.eventErrorPolicy = eventErrorPolicy;
+	}
+
+	/**
+	 * Determines what the event broker should do in case of runtime errors
+	 * (usually happens inside event handlers). Default is THROW.
+	 * 
+	 * @param errorPolicy
+	 *            The policy to set
+	 */
+	public void setRuntimeExceptionPolicy(ErrorPolicy runtimeExceptionPolicy) {
+		this.runtimeExceptionPolicy = runtimeExceptionPolicy;
+	}
+
+	/**
+	 * Dispatch a single event to be processed. WARNING: Do not call this method
+	 * from within a method that is itself an event responder! Use the
+	 * triggerEvent method of EventContext instead
+	 * 
+	 * @param event
+	 *            The event to dispatch
+	 * @throws EventException
+	 *             If an event encountered an error
 	 */
 	@Override
 	public final void dispatchEvent(Event<?> event) throws EventException {
@@ -86,12 +118,15 @@ public abstract class EventBroker implements IEventBroker {
 	}
 
 	/**
-	 * Dispatch multiple events to be processed, using the queuing mechanism to take care of ordering.
-	 * WARNING: Do not call this method from within a method that is itself an event responder! Use the
-	 * triggerEvent method of EventContext instead
+	 * Dispatch multiple events to be processed, using the queuing mechanism to
+	 * take care of ordering. WARNING: Do not call this method from within a
+	 * method that is itself an event responder! Use the triggerEvent method of
+	 * EventContext instead
 	 * 
-	 * @param events The events to dispatch
-	 * @throws EventException If an event encountered an error
+	 * @param events
+	 *            The events to dispatch
+	 * @throws EventException
+	 *             If an event encountered an error
 	 */
 	@Override
 	public final void dispatchEvents(List<Event<?>> events)
@@ -104,11 +139,13 @@ public abstract class EventBroker implements IEventBroker {
 	}
 
 	/**
-	 * Dispatch all queued events to event listeners. This method will cause any other method
-	 * listening for the given events to be called. Event listeners can trigger new events in turn,
-	 * in which case the implementing class can decide in which order they should be executed.
+	 * Dispatch all queued events to event listeners. This method will cause any
+	 * other method listening for the given events to be called. Event listeners
+	 * can trigger new events in turn, in which case the implementing class can
+	 * decide in which order they should be executed.
 	 * 
-	 * @throws EventException If the execution of the event goes awry
+	 * @throws EventException
+	 *             If the execution of the event goes awry
 	 */
 	protected final synchronized void processEvents() throws EventException {
 		// This method may not be recursively called - it may break event
@@ -116,10 +153,10 @@ public abstract class EventBroker implements IEventBroker {
 		if (!inProcessor.get()) {
 			try {
 				inProcessor.set(true);
-				while (!getQueue().isEmpty()) {
+				events: while (!getQueue().isEmpty()) {
 					Event<?> event = getQueue().remove(0);
 
-					log.info("Processing event of type "
+					log.debug("Processing event of type "
 							+ event.getClass().getName());
 
 					EventContext<?> context = createContext(event);
@@ -128,20 +165,52 @@ public abstract class EventBroker implements IEventBroker {
 
 					// Prevent NullPointerException
 					if (locator != null) {
-						for (EventListener listener : locator
+						listeners: for (EventListener listener : locator
 								.getEventListeners(eventClass)) {
-							listener.dispatchEvent(context);
+							log.trace("Dispatching to listener of type "
+									+ listener.getClass().getName());
+							try {
+								listener.dispatchEvent(context);
+							} catch (EventException e) {
+								log.error("Event processing error message");
+								log.error(e.getMessage(), e);
+								log.trace(String.format(
+										"Event error policy: %s",
+										eventErrorPolicy.name()));
+								switch (eventErrorPolicy) {
+									case THROW:
+										throw e;
+									case IGNORE_LISTENER:
+										continue listeners;
+									case IGNORE_EVENT:
+										continue events;
+									case STOP:
+										return;
+								}
+							} catch (RuntimeException e) {
+								log.error("Event processing error message");
+								log.error(e.getMessage(), e);
+								log.trace(String.format(
+										"Runtime exception policy: %s",
+										runtimeExceptionPolicy.name()));
+								switch (runtimeExceptionPolicy) {
+									case THROW:
+										throw e;
+									case IGNORE_LISTENER:
+										continue listeners;
+									case IGNORE_EVENT:
+										continue events;
+									case STOP:
+										return;
+								}
+							}
+
 						}
+					} else {
+						log.warn("No event listener locator");
 					}
 				}
-			} catch (EventException e) {
-				log.error("Event processing error message");
-				log.error(e.getMessage(), e);
-				throw e;
-			} catch (RuntimeException e) {
-				log.error("Event processing error message");
-				log.error(e.getMessage(), e);
-				throw e;
+
 			} finally {
 				// Prevent deadlocking the event processor
 				inProcessor.set(false);
@@ -155,16 +224,21 @@ public abstract class EventBroker implements IEventBroker {
 	}
 
 	/**
-	 * Adds the given even to the queue. The exact behavior of this method depends on the implementation provided by the subclass
-	 * @param event The event to enqueue
+	 * Adds the given even to the queue. The exact behavior of this method
+	 * depends on the implementation provided by the subclass
+	 * 
+	 * @param event
+	 *            The event to enqueue
 	 */
 	protected abstract void enqueueEvent(Event<?> event);
 
 	/**
-	 * Creates an event context for the given event. Depending on the mechanism of event dispatching,
-	 * which is decided by the ListenerLocator and the implementing class, the behavior of this class
-	 * may differ 
-	 * @param event The event to create a context for
+	 * Creates an event context for the given event. Depending on the mechanism
+	 * of event dispatching, which is decided by the ListenerLocator and the
+	 * implementing class, the behavior of this class may differ
+	 * 
+	 * @param event
+	 *            The event to create a context for
 	 * @return A context for the given event, capable of dispatching new events
 	 */
 	protected abstract <T extends Event<?>> EventContext<T> createContext(
